@@ -5,7 +5,8 @@ on:
     branches: ["main"]
     paths:
       - "apps/landing/**"
-      - ".github/workflows/nextjs.yml"
+      - "packages/i18n/**"
+      - ".github/workflows/deploy_landing_page.yml"
   workflow_dispatch:
 
 permissions:
@@ -21,10 +22,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: apps/landing
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,14 +31,17 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install pnpm
+        run: npm install -g pnpm@10
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build landing
-        run: npm run build
+        run: pnpm --filter @valyria/landing build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
