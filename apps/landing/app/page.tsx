@@ -21,6 +21,8 @@ import { Card } from "@/components/ui/card";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { useLang } from "@/components/lang-provider";
 
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
 /* ─── Equipe ───────────────────────────────────────────────────────────── */
 const equipe = [
   { nome: "Roberto Caparroz", papel: "Advisor", foto: "/equipe/Roberto.jpg", iniciais: "RC", cor: "bg-moss" },
@@ -91,7 +93,7 @@ export default function HomePage() {
       {/* ── Hero ── */}
       <section className="relative overflow-hidden pb-section pt-24 sm:pt-32">
         <div className="hero-image-wrapper" aria-hidden="true">
-          <img src="/hero-campo.png" alt="" className="hero-image" />
+          <img src={`${BASE}/hero-campo.png`} alt="" className="hero-image" />
         </div>
         <div className="section-inner relative">
           <div className="hero-stagger max-w-2xl">
@@ -337,7 +339,7 @@ export default function HomePage() {
               {row.map((m) => (
                 <div key={m.nome} className="rv flex flex-col items-center gap-4">
                   <img
-                    src={m.foto}
+                    src={`${BASE}${m.foto}`}
                     alt={m.nome}
                     className="h-24 w-24 rounded-full object-cover object-top sm:h-28 sm:w-28"
                     style={m.fotoOffset ? { objectPosition: `center ${m.fotoOffset}` } : undefined}
