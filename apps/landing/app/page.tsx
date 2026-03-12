@@ -589,7 +589,7 @@ export default function HomePage() {
             da Ripple e da FGV. Demo Day em junho no escritório da Ripple em SP.
           </p>
           <ButtonLink
-            href="https://github.com/valyria-protocol"
+            href="https://github.com/IJus-dev/VALYRIA"
             target="_blank"
             size="lg"
             className="bg-paper text-dusk hover:bg-sand"

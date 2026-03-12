@@ -58,7 +58,7 @@ export default function RootLayout({
                 Protocolo
               </a>
               <a
-                href="https://github.com/valyria-protocol"
+                href="https://github.com/IJus-dev/VALYRIA"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="transition hover:text-dusk"
@@ -121,7 +121,7 @@ export default function RootLayout({
                   Ativos
                 </a>
                 <a
-                  href="https://github.com/valyria-protocol"
+                  href="https://github.com/IJus-dev/VALYRIA"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition hover:text-dusk"
