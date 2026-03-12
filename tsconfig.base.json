@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@valyria/cache": ["packages/cache/src/index.ts"],
+      "@valyria/database": ["packages/database/src/index.ts"],
+      "@valyria/domain": ["packages/domain/src/index.ts"],
+      "@valyria/xrpl": ["packages/xrpl/src/index.ts"]
+    }
+  }
+}

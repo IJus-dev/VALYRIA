@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-paper: 255 250 243;
+  --color-sand: 245 239 227;
+  --color-fog: 232 223 208;
+  --color-clay: 187 124 76;
+  --color-moss: 47 93 80;
+  --color-dusk: 43 53 64;
+  --color-ink: 22 26 29;
+  --color-line: 118 112 101;
+  --font-sans: "Aptos", "Segoe UI Variable", "Trebuchet MS", sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  --radius-panel: 1.5rem;
+  --radius-tile: 1.125rem;
+  --radius-pill: 999px;
+  --shadow-panel: 0 24px 80px rgba(18, 24, 27, 0.12);
+  --shadow-hero: 0 36px 120px rgba(18, 24, 27, 0.16);
+  --space-section: clamp(3.5rem, 7vw, 6rem);
+  --space-cluster: 1.5rem;
+  --space-frame: 1.25rem;
+  --tracking-tight: -0.02em;
+  --tracking-eyebrow: 0.18em;
+  --tracking-brand: 0.32em;
+  --max-width-shell: 80rem;
+  --z-header: 40;
+  --ease-fluent: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgb(var(--color-clay) / 0.24), transparent 28%),
+    radial-gradient(circle at 0% 20%, rgb(var(--color-moss) / 0.18), transparent 30%),
+    linear-gradient(
+      180deg,
+      rgb(var(--color-paper)) 0%,
+      rgb(var(--color-sand)) 42%,
+      rgb(var(--color-fog)) 100%
+    );
+  color: rgb(var(--color-ink));
+  font-family: var(--font-sans);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgb(var(--color-clay) / 0.22);
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: var(--tracking-tight);
+  }
+}
+
+@layer components {
+  .app-shell {
+    @apply mx-auto flex min-h-screen w-full max-w-shell flex-col px-4 pb-16 pt-4 sm:px-6 lg:px-8;
+  }
+
+  .panel {
+    border: 1px solid rgb(var(--color-line) / 0.45);
+    border-radius: var(--radius-panel);
+    background: rgb(var(--color-paper) / 0.72);
+    box-shadow: var(--shadow-panel);
+    backdrop-filter: blur(20px);
+  }
+
+  .eyebrow {
+    color: rgb(var(--color-moss) / 0.84);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-brand);
+    text-transform: uppercase;
+  }
+
+  .hero-grid {
+    @apply grid gap-cluster lg:grid-cols-[1.4fr_0.9fr];
+  }
+
+  .label-caps {
+    color: rgb(var(--color-clay) / 0.86);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+  }
+
+  .body-copy {
+    color: rgb(var(--color-ink) / 0.72);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+  }
+
+  .section-frame {
+    @apply flex flex-col gap-6;
+  }
+
+  .section-shell {
+    @apply grid gap-cluster;
+  }
+}
+
+/* ─── Landing page visual polish ─── */
+
+/* Organic grain texture overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.024;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Hero entrance: staggered children fade-up */
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(1.8rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-stagger > * {
+  animation: hero-enter 0.85s var(--ease-fluent) both;
+}
+
+.hero-stagger > *:nth-child(1) { animation-delay: 0.04s; }
+.hero-stagger > *:nth-child(2) { animation-delay: 0.14s; }
+.hero-stagger > *:nth-child(3) { animation-delay: 0.26s; }
+.hero-stagger > *:nth-child(4) { animation-delay: 0.38s; }
+.hero-stagger > *:nth-child(5) { animation-delay: 0.50s; }
+
+/* Hero decorative glow orbs */
+@keyframes glow-drift {
+  0%, 100% { opacity: 0.35; transform: scale(1) translate(0, 0); }
+  50% { opacity: 0.5; transform: scale(1.06) translate(-8px, 6px); }
+}
+
+.hero-glow {
+  position: absolute;
+  top: -100px;
+  right: -60px;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(var(--color-clay) / 0.22),
+    rgb(var(--color-moss) / 0.08),
+    transparent 70%
+  );
+  filter: blur(60px);
+  pointer-events: none;
+  animation: glow-drift 9s ease-in-out infinite;
+}
+
+.hero-glow-secondary {
+  position: absolute;
+  bottom: -60px;
+  left: -40px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(var(--color-moss) / 0.16),
+    transparent 70%
+  );
+  filter: blur(50px);
+  pointer-events: none;
+  animation: glow-drift 12s ease-in-out infinite 4s;
+}
+
+/* Scroll-driven section reveal (Chrome 115+, Safari 17.5+) */
+@keyframes section-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  main > section:not(:first-child) {
+    animation: section-reveal both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+}

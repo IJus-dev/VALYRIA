@@ -1,0 +1,383 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../packages/database/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserState {
+  registered
+  email_verified
+  wallet_linked
+  kyc_pending
+  kyc_approved
+  kyc_rejected
+  producer_approved
+  suspended
+}
+
+enum BondState {
+  pending
+  locked
+  frozen
+  partially_slashed
+  released
+  forfeited
+}
+
+enum OfferStatus {
+  draft
+  listed
+  partially_filled
+  filled
+  redeem_requested
+  settled
+  cancelled
+}
+
+enum OfferExecutionLane {
+  local
+  xrpl_dex
+}
+
+enum RedeemState {
+  requested
+  tracking_pending
+  in_delivery
+  delivered
+  accepted
+  disputed
+  closed
+}
+
+enum CredentialKind {
+  KYCApproved
+  ProducerApproved
+}
+
+enum CredentialStatus {
+  created
+  accepted
+  revoked
+  expired
+}
+
+enum ProofArtifactType {
+  underwriting_report
+  farm_document
+  geo_photo
+  delivery_receipt
+  dispute_evidence
+}
+
+enum DisputeTier {
+  tier_1
+  tier_2
+  tier_3
+}
+
+enum DisputeState {
+  opened
+  under_review
+  resolved
+  escalated
+  rejected
+}
+
+enum DisputeBondDecision {
+  restore_lock
+  slash_partial
+  forfeit
+}
+
+model User {
+  id               String             @id @default(cuid())
+  name             String?
+  email            String?            @unique
+  emailVerified    DateTime?
+  image            String?
+  walletAddress    String?            @unique
+  state            UserState          @default(registered)
+  roles            String[]           @default([])
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  accounts         Account[]
+  sessions         Session[]
+  walletChallenges WalletChallenge[]
+  credentials      CredentialRecord[]
+  bonds            Bond[]
+  offers           Offer[]            @relation("ProducerOffers")
+  heldOffers       Offer[]            @relation("CurrentHolderOffers")
+  redeems          RedeemRequest[]    @relation("HolderRedeems")
+  openedDisputes   DisputeCase[]      @relation("OpenedDisputes")
+  auditLogs        AuditLog[]         @relation("ActorAuditLogs")
+  proofs           ProofArtifact[]
+  proposals        Proposal[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model WalletChallenge {
+  id            String   @id @default(cuid())
+  userId        String
+  walletAddress String
+  nonce         String
+  message       String   @db.Text
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CredentialRecord {
+  id                 String           @id @default(cuid())
+  userId             String
+  kind               CredentialKind
+  status             CredentialStatus @default(created)
+  issuerWallet       String?
+  subjectWallet      String?
+  ledgerCredentialId String?          @unique
+  expiresAt          DateTime?
+  acceptedAt         DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Bond {
+  id                String    @id @default(cuid())
+  userId            String
+  amount            Float
+  currency          String
+  credentialIds     String[]  @default([])
+  state             BondState @default(pending)
+  slashedAmount     Float     @default(0)
+  ledgerHash        String?
+  ledgerSequence    Int?
+  escrowSequence    Int?
+  escrowCondition   String?
+  escrowFinishAfter DateTime?
+  escrowLedgerHash  String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  lockedAt          DateTime?
+  frozenAt          DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Offer {
+  id                String      @id @default(cuid())
+  producerId        String
+  currentHolderId   String?
+  quantity          Float
+  unitPrice         Float
+  notional          Float
+  expiresAt         DateTime
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  status            OfferStatus @default(listed)
+  executionLane     OfferExecutionLane @default(local)
+  seriesAlias       String
+  seriesCurrencyHex String
+  seriesDescriptor  Json
+  sellerWallet      String?
+  seriesIssuer      String?
+  quoteCurrency     String?
+  quoteIssuer       String?
+  ledgerHash        String?
+  ledgerSequence    Int?
+  ledgerOfferSequence Int?
+  fillLedgerHash    String?
+  fillLedgerSequence Int?
+  filledAt          DateTime?
+  filledQuantity    Float?
+
+  producer      User            @relation("ProducerOffers", fields: [producerId], references: [id], onDelete: Cascade)
+  currentHolder User?           @relation("CurrentHolderOffers", fields: [currentHolderId], references: [id], onDelete: SetNull)
+  redeems       RedeemRequest[]
+  proofs        ProofArtifact[]
+}
+
+model RedeemRequest {
+  id                 String      @id @default(cuid())
+  offerId            String
+  holderId           String
+  state              RedeemState @default(requested)
+  requestedAt        DateTime    @default(now())
+  responseWindowDays Int
+  settlementWallet   String
+  settlementLedgerHash String?
+  settlementLedgerSequence Int?
+  settlementTransferredAt DateTime?
+  escrowSequence     Int?
+  escrowFinishAfter  DateTime?
+  escrowLedgerHash   String?
+  trackingCode       String?
+  shippedAt          DateTime?
+  deliveredAt        DateTime?
+  acceptedAt         DateTime?
+  closedAt           DateTime?
+
+  offer     Offer         @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  holder    User          @relation("HolderRedeems", fields: [holderId], references: [id], onDelete: Cascade)
+  disputes  DisputeCase[]
+}
+
+model DisputeCase {
+  id             String       @id @default(cuid())
+  redeemId       String
+  openedByUserId String
+  tier           DisputeTier  @default(tier_1)
+  state          DisputeState @default(opened)
+  reason         String       @db.Text
+  evidenceUri    String?
+  bondId         String?
+  bondDecision   DisputeBondDecision?
+  slaDueAt       DateTime?
+  resolvedAt     DateTime?
+  resolutionSummary String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  redeem       RedeemRequest @relation(fields: [redeemId], references: [id], onDelete: Cascade)
+  openedByUser User          @relation("OpenedDisputes", fields: [openedByUserId], references: [id], onDelete: Cascade)
+}
+
+model ProofArtifact {
+  id           String            @id @default(cuid())
+  userId       String?
+  offerId      String?
+  artifactType ProofArtifactType
+  commodity    String
+  uri          String
+  ipfsCid      String?
+  manifestHash String?
+  nftTokenId   String?           @unique
+  nftIssuerWallet String?
+  nftUri       String?
+  nftMintHash  String?
+  nftMintLedgerSequence Int?
+  nftMintedAt  DateTime?
+  metadata     Json?
+  createdAt    DateTime          @default(now())
+
+  user  User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  offer Offer? @relation(fields: [offerId], references: [id], onDelete: SetNull)
+}
+
+model OraclePrice {
+  id          String   @id @default(cuid())
+  symbol      String
+  source      String
+  value       Float
+  metadata    Json?
+  publishedAt DateTime @default(now())
+
+  @@index([symbol, publishedAt])
+}
+
+model AmmPool {
+  id              String   @id @default(cuid())
+  pair            String   @unique
+  baseAsset       String
+  quoteAsset      String
+  baseReserve     Float
+  quoteReserve    Float
+  feeBps          Int      @default(30)
+  ammAccountId    String?  @unique
+  lpTokenCurrency String?
+  lpTokenIssuer   String?
+  ammLedgerHash   String?
+  isNative        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  action      String
+  entityType  String
+  entityId    String
+  payload     Json?
+  createdAt   DateTime @default(now())
+
+  actorUser User? @relation("ActorAuditLogs", fields: [actorUserId], references: [id], onDelete: SetNull)
+}
+
+model FeeRecord {
+  id          String   @id @default(cuid())
+  feeType     String
+  entityType  String
+  entityId    String
+  baseAmount  Float
+  feeRate     Float
+  feeAmount   Float
+  currency    String   @default("VEX")
+  createdAt   DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([feeType])
+}
+
+enum ProposalStatus {
+  draft
+  active
+  review
+  approved
+  rejected
+  archived
+}
+
+model Proposal {
+  id        String         @id @default(cuid())
+  code      String         @unique
+  title     String
+  summary   String
+  status    ProposalStatus @default(draft)
+  authorId  String
+  author    User           @relation(fields: [authorId], references: [id])
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}

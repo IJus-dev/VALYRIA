@@ -1,0 +1,30 @@
+{
+  "name": "valyria-platform",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@10.12.4",
+  "scripts": {
+    "dev": "pnpm -r --parallel --if-present dev",
+    "dev:web": "pnpm --filter @valyria/web dev",
+    "dev:api": "pnpm --filter @valyria/api dev",
+    "build": "pnpm -r --if-present build",
+    "lint:design": "node scripts/lint-design-system.mjs",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "postinstall": "pnpm db:generate",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "xrpl:bootstrap:testnet": "pnpm --filter @valyria/api exec tsx src/scripts/xrpl-bootstrap-testnet.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@prisma/client": "^6.19.2",
+    "@types/node": "^22.10.5",
+    "prisma": "^6.19.2",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^4.0.18"
+  }
+}

@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+out/
+*.tsbuildinfo
+.turbo/
+
+# Prisma generated client
+packages/database/generated/
+
+# Uploaded files (proofs storage)
+data/
+
+# Environment files (all of them)
+.env
+.env.*
+!.env.example
+!.env.local.example
+apps/api/.env
+apps/api/.env.*
+!apps/api/.env.example
+apps/web/.env.local
+apps/web/.env.*
+!apps/web/.env.local.example
+
+# Markdown files (except README.md)
+*.md
+!README.md
+docs/
+
+# Claude Code sessions
+.claude/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# Testing
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Docker volumes (local)
+postgres_data/
+redis_data/
+
+# Misc
+*.tgz
+*.lock
+!pnpm-lock.yaml
