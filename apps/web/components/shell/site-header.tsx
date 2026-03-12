@@ -4,32 +4,39 @@ import { signOut } from "@/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
-
-const publicNavigation = [
-  { href: "/dashboard", label: "Home" },
-  { href: "/market", label: "Market" },
-  { href: "/login", label: "Login" }
-];
-
-const appNavigation = [
-  { href: "/dashboard", label: "Home" },
-  { href: "/onboarding", label: "Onboarding" },
-  { href: "/market", label: "Market" },
-  { href: "/wallet", label: "Wallet" },
-  { href: "/bond-vault", label: "Bond vault" },
-  { href: "/redeems", label: "Redeems" },
-  { href: "/oracles", label: "Oracles" },
-  { href: "/proofs", label: "Proofs" },
-  { href: "/disputes", label: "Disputes" },
-  { href: "/analytics", label: "Analytics" },
-  { href: "/reputation", label: "Reputation" },
-  { href: "/governance", label: "Governance" },
-  { href: "/admin/offers", label: "Admin" },
-  { href: "/notifications", label: "Alerts" },
-  { href: "/offers/new", label: "New offer" }
-];
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
+import { LangToggle } from "@/components/shell/lang-toggle";
 
 export function SiteHeader({ session }: { session: Session | null }) {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
+  const publicNavigation = [
+    { href: "/dashboard", label: t("nav.home") },
+    { href: "/market", label: t("nav.market") },
+    { href: "/login", label: t("nav.login") },
+  ];
+
+  const appNavigation = [
+    { href: "/dashboard", label: t("nav.home") },
+    { href: "/onboarding", label: t("nav.onboarding") },
+    { href: "/market", label: t("nav.market") },
+    { href: "/wallet", label: t("nav.wallet") },
+    { href: "/bond-vault", label: t("nav.bondVault") },
+    { href: "/redeems", label: t("nav.redeems") },
+    { href: "/oracles", label: t("nav.oracles") },
+    { href: "/proofs", label: t("nav.proofs") },
+    { href: "/disputes", label: t("nav.disputes") },
+    { href: "/analytics", label: t("nav.analytics") },
+    { href: "/reputation", label: t("nav.reputation") },
+    { href: "/governance", label: t("nav.governance") },
+    { href: "/admin/offers", label: t("nav.admin") },
+    { href: "/notifications", label: t("nav.alerts") },
+    { href: "/offers/new", label: t("nav.newOffer") },
+  ];
+
   const navigation = session?.user ? appNavigation : publicNavigation;
 
   return (
@@ -37,9 +44,9 @@ export function SiteHeader({ session }: { session: Session | null }) {
       <div className="flex items-center gap-4">
         <div>
           <Eyebrow>VALYRIA</Eyebrow>
-          <div className="mt-1 text-sm text-ink/70">XRPL commodity derivatives infrastructure</div>
+          <div className="mt-1 text-sm text-ink/70">{t("header.tagline")}</div>
         </div>
-        <Badge variant="outline">MVP técnico</Badge>
+        <Badge variant="outline">{t("header.badge")}</Badge>
       </div>
 
       <nav className="flex flex-wrap items-center gap-2">
@@ -63,8 +70,9 @@ export function SiteHeader({ session }: { session: Session | null }) {
           href={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/health`}
           className="rounded-pill border border-line/55 bg-paper/82 px-3 py-2 text-sm text-dusk"
         >
-          API health
+          {t("header.apiHealth")}
         </a>
+        <LangToggle />
         {session?.user ? (
           <form
             action={async () => {
@@ -74,7 +82,7 @@ export function SiteHeader({ session }: { session: Session | null }) {
               });
             }}
           >
-            <Button variant="ghost" size="sm" type="submit">Sign out</Button>
+            <Button variant="ghost" size="sm" type="submit">{t("header.signOut")}</Button>
           </form>
         ) : null}
       </nav>

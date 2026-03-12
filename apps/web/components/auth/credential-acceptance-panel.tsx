@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useLocale } from "@/lib/locale-context";
 
 interface CredentialAcceptancePanelProps {
   session: Session | null;
@@ -25,6 +26,7 @@ interface AcceptCredentialResponse {
 }
 
 export function CredentialAcceptancePanel({ session }: CredentialAcceptancePanelProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [credentials, setCredentials] = useState<CredentialListItem[]>([]);
   const [selectedCredentialId, setSelectedCredentialId] = useState("");
@@ -90,33 +92,32 @@ export function CredentialAcceptancePanel({ session }: CredentialAcceptancePanel
     <Card tone="soft" className="p-5">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h3 className="text-2xl text-dusk">Credential acceptance</h3>
+          <h3 className="text-2xl text-dusk">{t("credentialAcceptance.heading")}</h3>
           <p className="mt-2 body-copy">
-            O próprio usuário confirma a credencial emitida e fecha o passo de `CredentialAccept`.
-            Em `XRPL_MODE=real`, use a seed temporária da wallet apenas para a assinatura local de testnet.
+            {t("credentialAcceptance.desc")}
           </p>
         </div>
-        <Badge variant="outline">Self-service</Badge>
+        <Badge variant="outline">{t("credentialAcceptance.badge")}</Badge>
       </div>
 
       <div className="mt-5 grid gap-4">
         <div className="grid gap-3 md:grid-cols-2">
           <div className="rounded-tile border border-line/45 bg-sand/35 p-4">
-            <div className="label-caps">Pendentes</div>
+            <div className="label-caps">{t("credentialAcceptance.pending")}</div>
             <div className="mt-2 text-3xl text-dusk">{pendingCredentials.length}</div>
           </div>
           <div className="rounded-tile border border-line/45 bg-sand/35 p-4">
-            <div className="label-caps">Aceitas</div>
+            <div className="label-caps">{t("credentialAcceptance.accepted")}</div>
             <div className="mt-2 text-3xl text-dusk">{acceptedCredentials.length}</div>
           </div>
         </div>
 
         {!session?.user?.id ? (
-          <p className="body-copy">Entre com OTP para consultar e aceitar credenciais emitidas.</p>
+          <p className="body-copy">{t("credentialAcceptance.loginFirst")}</p>
         ) : isLoading ? (
-          <p className="body-copy">Carregando credenciais...</p>
+          <p className="body-copy">{t("credentialAcceptance.loading")}</p>
         ) : credentials.length === 0 ? (
-          <p className="body-copy">Nenhuma credencial emitida para esta conta ainda.</p>
+          <p className="body-copy">{t("credentialAcceptance.noCredentials")}</p>
         ) : (
           <>
             <div className="grid gap-3">
@@ -128,7 +129,7 @@ export function CredentialAcceptancePanel({ session }: CredentialAcceptancePanel
                   </div>
                   <div className="mt-3 body-copy">{credential.id}</div>
                   <div className="mt-2 body-copy">
-                    Wallet: {credential.subjectWallet ?? session?.user?.walletAddress ?? "wallet pending"}
+                    {t("credentialAcceptance.wallet")}{credential.subjectWallet ?? session?.user?.walletAddress ?? t("credentialAcceptance.walletPending")}
                   </div>
                 </div>
               ))}
@@ -148,12 +149,12 @@ export function CredentialAcceptancePanel({ session }: CredentialAcceptancePanel
                 </Select>
 
                 <Input
-                  placeholder="ledger_credential_id opcional"
+                  placeholder={t("credentialAcceptance.credentialIdPlaceholder")}
                   value={ledgerCredentialId}
                   onChange={(event) => setLedgerCredentialId(event.target.value)}
                 />
                 <Input
-                  placeholder="seed temporária da wallet (somente testnet)"
+                  placeholder={t("credentialAcceptance.seedPlaceholder")}
                   value={walletSeed}
                   onChange={(event) => setWalletSeed(event.target.value)}
                 />
@@ -208,11 +209,11 @@ export function CredentialAcceptancePanel({ session }: CredentialAcceptancePanel
                     });
                   }}
                 >
-                  {isPending ? "Aceitando..." : "Aceitar credencial"}
+                  {isPending ? t("credentialAcceptance.accepting") : t("credentialAcceptance.accept")}
                 </Button>
               </>
             ) : (
-              <p className="body-copy">Não há credenciais pendentes para aceitação nesta conta.</p>
+              <p className="body-copy">{t("credentialAcceptance.noPending")}</p>
             )}
           </>
         )}

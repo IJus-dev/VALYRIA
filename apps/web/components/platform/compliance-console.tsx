@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useLocale } from "@/lib/locale-context";
 
 interface ComplianceConsoleProps {
   users: UserListItem[];
@@ -16,6 +17,7 @@ interface ComplianceConsoleProps {
 }
 
 export function ComplianceConsole({ users, credentials }: ComplianceConsoleProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [createEmail, setCreateEmail] = useState("");
@@ -34,15 +36,15 @@ export function ComplianceConsole({ users, credentials }: ComplianceConsoleProps
   return (
     <div className="grid gap-4">
       <Card className="p-6">
-        <h2 className="text-2xl text-dusk">Criar participante</h2>
+        <h2 className="text-2xl text-dusk">{t("compliance.createParticipant")}</h2>
         <div className="mt-4 grid gap-3">
           <Input
-            placeholder="Nome"
+            placeholder={t("compliance.namePlaceholder")}
             value={createName}
             onChange={(event) => setCreateName(event.target.value)}
           />
           <Input
-            placeholder="email@valyria.io"
+            placeholder={t("compliance.emailPlaceholder")}
             value={createEmail}
             onChange={(event) => setCreateEmail(event.target.value)}
           />
@@ -62,18 +64,18 @@ export function ComplianceConsole({ users, credentials }: ComplianceConsoleProps
 
                 setCreateEmail("");
                 setCreateName("");
-                toast.success(`Usuário criado: ${result.payload.email}`);
+                toast.success(`${t("compliance.userCreated")}${result.payload.email}`);
                 router.refresh();
               });
             }}
           >
-            {isPending ? "Criando..." : "Criar usuário"}
+            {isPending ? t("compliance.creating") : t("compliance.createUser")}
           </Button>
         </div>
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl text-dusk">Transicionar estado</h2>
+        <h2 className="text-2xl text-dusk">{t("compliance.transitionState")}</h2>
         <div className="mt-4 grid gap-3">
           <Select
             value={transitionUserId}
@@ -105,7 +107,7 @@ export function ComplianceConsole({ users, credentials }: ComplianceConsoleProps
             ))}
           </Select>
           <Input
-            placeholder="Wallet address opcional"
+            placeholder={t("compliance.walletPlaceholder")}
             value={walletAddress}
             onChange={(event) => setWalletAddress(event.target.value)}
           />
@@ -129,13 +131,13 @@ export function ComplianceConsole({ users, credentials }: ComplianceConsoleProps
               });
             }}
           >
-            {isPending ? "Atualizando..." : "Aplicar transição"}
+            {isPending ? t("compliance.updating") : t("compliance.applyTransition")}
           </Button>
         </div>
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl text-dusk">Emitir credencial</h2>
+        <h2 className="text-2xl text-dusk">{t("compliance.issueCredential")}</h2>
         <div className="mt-4 grid gap-3">
           <Select
             value={issueUserId}
@@ -186,13 +188,13 @@ export function ComplianceConsole({ users, credentials }: ComplianceConsoleProps
               });
             }}
           >
-            {isPending ? "Emitindo..." : "Emitir credencial"}
+            {isPending ? t("compliance.issuing") : t("compliance.issueCredential")}
           </Button>
         </div>
       </Card>
 
       <Card className="p-6">
-        <h2 className="text-2xl text-dusk">Aceitar credencial</h2>
+        <h2 className="text-2xl text-dusk">{t("compliance.acceptCredential")}</h2>
         <div className="mt-4 grid gap-3">
           <Select
             value={credentialId}
@@ -205,7 +207,7 @@ export function ComplianceConsole({ users, credentials }: ComplianceConsoleProps
             ))}
           </Select>
           <Input
-            placeholder="ledger_credential_id opcional"
+            placeholder={t("compliance.credentialIdPlaceholder")}
             value={ledgerCredentialId}
             onChange={(event) => setLedgerCredentialId(event.target.value)}
           />
@@ -247,7 +249,7 @@ export function ComplianceConsole({ users, credentials }: ComplianceConsoleProps
               });
             }}
           >
-            {isPending ? "Aceitando..." : "Aceitar credencial"}
+            {isPending ? t("compliance.accepting") : t("compliance.acceptCredential")}
           </Button>
         </div>
       </Card>

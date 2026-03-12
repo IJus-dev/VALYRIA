@@ -6,6 +6,7 @@ import {
   getCommodityFromAlias,
   getRegionName,
 } from "@/lib/commodity-catalog";
+import { useLocale } from "@/lib/locale-context";
 import { Card } from "@/components/ui/card";
 import { CommodityFilterStrip } from "@/components/market/commodity-filter-strip";
 import { MarketplaceFilters } from "@/components/market/marketplace-filters";
@@ -30,6 +31,7 @@ interface MarketplaceGridProps {
 }
 
 export function MarketplaceGrid({ offers }: MarketplaceGridProps) {
+  const { t } = useLocale();
   const [selectedCommodity, setSelectedCommodity] = useState<string | null>(
     null
   );
@@ -126,10 +128,9 @@ export function MarketplaceGrid({ offers }: MarketplaceGridProps) {
         </div>
       ) : (
         <Card tone="soft" className="p-8 text-center">
-          <p className="text-lg text-dusk">Nenhuma oferta encontrada.</p>
+          <p className="text-lg text-dusk">{t("marketplace.grid.empty")}</p>
           <p className="mt-2 text-sm text-ink/65">
-            Novas séries são listadas assim que produtores completam o
-            underwriting e depositam o bond em VEX.
+            {t("marketplace.grid.emptyDesc")}
           </p>
         </Card>
       )}

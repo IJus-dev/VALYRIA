@@ -1,11 +1,17 @@
 import Link from "next/link";
 import { getDisputes, getOffers, getRedeems } from "@/lib/api";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 import { RedeemAutoAcceptForm, RedeemTransitionForm } from "@/components/platform/redeem-console";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { SectionHeading } from "@/components/ui/section-heading";
 
 export default async function RedeemsPage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const [redeems, offers, disputes] = await Promise.all([getRedeems(), getOffers(), getDisputes()]);
   const offerMap = new Map(offers.map((offer) => [offer.id, offer]));
 
@@ -13,8 +19,8 @@ export default async function RedeemsPage() {
     <main className="flex flex-col gap-section pt-8">
       <section className="section-frame">
         <SectionHeading
-          eyebrow="REDEEM & DELIVERY"
-          heading="Entregas em andamento."
+          eyebrow={t("redeems.eyebrow")}
+          heading={t("redeems.heading")}
         />
       </section>
 
@@ -34,26 +40,26 @@ export default async function RedeemsPage() {
                 <div className="mt-4 grid gap-3">
                   {redeem.trackingCode ? (
                     <div className="flex items-center justify-between rounded-tile border border-line/45 bg-paper/72 px-4 py-3">
-                      <span className="label-caps">Tracking</span>
+                      <span className="label-caps">{t("redeems.tracking")}</span>
                       <span className="text-sm text-moss">{redeem.trackingCode}</span>
                     </div>
                   ) : null}
                   {redeem.settlementLedgerHash ? (
                     <div className="flex items-center justify-between rounded-tile border border-line/45 bg-paper/72 px-4 py-3">
-                      <span className="label-caps">Settlement</span>
+                      <span className="label-caps">{t("redeems.settlement")}</span>
                       <span className="truncate text-sm text-ink/72">{redeem.settlementLedgerHash}</span>
                     </div>
                   ) : null}
                   {(redeem.shippedAt || redeem.deliveredAt) ? (
                     <div className="flex items-center gap-4 rounded-tile border border-line/45 bg-paper/72 px-4 py-3 text-sm text-ink/72">
-                      {redeem.shippedAt ? <span>Shipped: {redeem.shippedAt.slice(0, 10)}</span> : null}
-                      {redeem.deliveredAt ? <span>Delivered: {redeem.deliveredAt.slice(0, 10)}</span> : null}
+                      {redeem.shippedAt ? <span>{t("redeems.shipped")}{redeem.shippedAt.slice(0, 10)}</span> : null}
+                      {redeem.deliveredAt ? <span>{t("redeems.delivered")}{redeem.deliveredAt.slice(0, 10)}</span> : null}
                     </div>
                   ) : null}
                 </div>
                 {dispute ? (
                   <div className="mt-4 rounded-tile border border-clay/30 bg-clay/5 p-4 text-sm text-ink/72">
-                    Disputa: {dispute.reason}
+                    {t("redeems.dispute")}{dispute.reason}
                   </div>
                 ) : null}
               </Card>
@@ -66,11 +72,11 @@ export default async function RedeemsPage() {
           <RedeemAutoAcceptForm />
 
           <Card className="p-6">
-            <span className="eyebrow">Disputas</span>
-            <p className="mt-3 body-copy">Entregas sem resposta até o prazo geram auto-accept. Disputas congelam o fluxo.</p>
+            <span className="eyebrow">{t("redeems.disputes")}</span>
+            <p className="mt-3 body-copy">{t("redeems.autoAcceptDesc")}</p>
             <div className="mt-4">
               <Link href="/disputes" className="text-sm font-semibold text-moss">
-                Abrir central de disputas
+                {t("redeems.openDisputeCenter")}
               </Link>
             </div>
           </Card>

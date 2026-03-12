@@ -2,6 +2,7 @@
 
 import { COMMODITY_CATALOG } from "@/lib/commodity-catalog";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/lib/locale-context";
 
 interface CommodityFilterStripProps {
   commodityCounts: Record<string, number>;
@@ -14,6 +15,7 @@ export function CommodityFilterStrip({
   selected,
   onSelect,
 }: CommodityFilterStripProps) {
+  const { t } = useLocale();
   const totalCount = Object.values(commodityCounts).reduce(
     (sum, count) => sum + count,
     0
@@ -35,7 +37,7 @@ export function CommodityFilterStrip({
             : "border-line/55 bg-paper/72 text-dusk hover:bg-paper/90 hover:border-line/70"
         )}
       >
-        Todos ({totalCount})
+        {t("marketplace.commodity.all")} ({totalCount})
       </button>
 
       {activeCommodities.map(([code, count]) => {

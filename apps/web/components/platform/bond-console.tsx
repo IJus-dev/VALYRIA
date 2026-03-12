@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useLocale } from "@/lib/locale-context";
 
 interface BondConsoleProps {
   users: UserListItem[];
@@ -20,6 +21,7 @@ interface BondConsoleProps {
 }
 
 export function BondConsole({ users, credentials, bonds }: BondConsoleProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -67,8 +69,8 @@ export function BondConsole({ users, credentials, bonds }: BondConsoleProps) {
       createForm.setValue("walletSeed", "");
       toast.success(
         result.payload.ledger.submitted
-          ? `Bond criado e travado em testnet: ${result.payload.bond.id}. hash=${result.payload.ledger.hash ?? "n/a"}`
-          : `Bond criado: ${result.payload.bond.id}.`
+          ? `${t("bondConsole.createdTestnet")}${result.payload.bond.id}. hash=${result.payload.ledger.hash ?? "n/a"}`
+          : `${t("bondConsole.created")}${result.payload.bond.id}.`
       );
       router.refresh();
     });
@@ -94,7 +96,7 @@ export function BondConsole({ users, credentials, bonds }: BondConsoleProps) {
         return;
       }
 
-      toast.success(`Bond ${result.payload.id} em ${result.payload.state}.`);
+      toast.success(`${t("bondConsole.bondInState")}${result.payload.id} ${result.payload.state}`);
       router.refresh();
     });
   };
@@ -103,7 +105,7 @@ export function BondConsole({ users, credentials, bonds }: BondConsoleProps) {
     <div className="grid gap-4">
       <Card className="p-6">
         <form onSubmit={createForm.handleSubmit(onCreateSubmit)}>
-          <h2 className="text-2xl text-dusk">Criar bond</h2>
+          <h2 className="text-2xl text-dusk">{t("bondConsole.createBond")}</h2>
           <div className="mt-4 grid gap-3">
             <div>
               <Select
@@ -124,29 +126,29 @@ export function BondConsole({ users, credentials, bonds }: BondConsoleProps) {
               )}
             </div>
             <div>
-              <Input placeholder="Quantidade em VEX" {...createForm.register("amount")} />
+              <Input placeholder={t("bondConsole.amountPlaceholder")} {...createForm.register("amount")} />
               {createForm.formState.errors.amount && (
                 <p className="text-sm text-red-500">{createForm.formState.errors.amount.message}</p>
               )}
             </div>
             <div>
-              <Input placeholder="cred_1,cred_2" {...createForm.register("credentialIds")} />
+              <Input placeholder={t("bondConsole.credentialIdsPlaceholder")} {...createForm.register("credentialIds")} />
               {createForm.formState.errors.credentialIds && (
                 <p className="text-sm text-red-500">{createForm.formState.errors.credentialIds.message}</p>
               )}
             </div>
             <div>
               <Input
-                placeholder="seed temporária da wallet do usuário (somente testnet)"
+                placeholder={t("bondConsole.seedPlaceholder")}
                 {...createForm.register("walletSeed")}
               />
             </div>
             <div className="rounded-tile border border-dashed border-line/60 bg-sand/35 p-4 text-sm text-ink/72">
-              Credenciais aceitas: {acceptedByUser.map((credential) => credential.id).join(", ") || "nenhuma"}
+              {t("bondConsole.credentialsAccepted")}{acceptedByUser.map((credential) => credential.id).join(", ") || t("bondConsole.none")}
               . Em `XRPL_MODE=real`, a seed temporária deve corresponder à wallet do usuário selecionado.
             </div>
             <Button type="submit" disabled={isPending}>
-              {isPending ? "Criando..." : "Criar bond"}
+              {isPending ? t("bondConsole.creating") : t("bondConsole.createBond")}
             </Button>
           </div>
         </form>
@@ -154,7 +156,7 @@ export function BondConsole({ users, credentials, bonds }: BondConsoleProps) {
 
       <Card className="p-6">
         <form onSubmit={transitionForm.handleSubmit(onTransitionSubmit)}>
-          <h2 className="text-2xl text-dusk">Transicionar bond</h2>
+          <h2 className="text-2xl text-dusk">{t("bondConsole.transitionBond")}</h2>
           <div className="mt-4 grid gap-3">
             <div>
               <Select {...transitionForm.register("bondId")}>
@@ -180,7 +182,7 @@ export function BondConsole({ users, credentials, bonds }: BondConsoleProps) {
               )}
             </div>
             <Button type="submit" disabled={isPending} variant="ghost">
-              {isPending ? "Aplicando..." : "Transicionar"}
+              {isPending ? t("bondConsole.applying") : t("bondConsole.transition")}
             </Button>
           </div>
         </form>

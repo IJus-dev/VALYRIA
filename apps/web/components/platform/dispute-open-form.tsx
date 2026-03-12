@@ -18,6 +18,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useLocale } from "@/lib/locale-context";
 
 interface DisputeOpenFormProps {
   redeems: RedeemListItem[];
@@ -25,6 +26,7 @@ interface DisputeOpenFormProps {
 }
 
 export function DisputeOpenForm({ redeems, users }: DisputeOpenFormProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -37,7 +39,7 @@ export function DisputeOpenForm({ redeems, users }: DisputeOpenFormProps) {
     defaultValues: {
       redeemId: redeems[0]?.id ?? "",
       openedByUserId: users[0]?.id ?? "",
-      reason: "Divergência de qualidade na entrega.",
+      reason: t("disputeForm.defaultReason"),
       evidenceUri: "ipfs://",
     },
   });
@@ -56,7 +58,7 @@ export function DisputeOpenForm({ redeems, users }: DisputeOpenFormProps) {
         return;
       }
 
-      toast.success(`Disputa aberta: ${result.payload.id}`);
+      toast.success(`${t("disputeForm.opened")}${result.payload.id}`);
       router.refresh();
     });
   };
@@ -64,7 +66,7 @@ export function DisputeOpenForm({ redeems, users }: DisputeOpenFormProps) {
   return (
     <Card className="p-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="text-2xl text-dusk">Abrir disputa</h2>
+        <h2 className="text-2xl text-dusk">{t("disputeForm.openDispute")}</h2>
         <div className="mt-4 grid gap-3">
           <div>
             <Select {...register("redeemId")}>
@@ -95,7 +97,7 @@ export function DisputeOpenForm({ redeems, users }: DisputeOpenFormProps) {
             {errors.evidenceUri && <p className="text-sm text-red-500">{errors.evidenceUri.message}</p>}
           </div>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Abrindo..." : "Abrir disputa"}
+            {isPending ? t("disputeForm.opening") : t("disputeForm.openDispute")}
           </Button>
         </div>
       </form>
@@ -108,6 +110,7 @@ interface DisputeTransitionFormProps {
 }
 
 export function DisputeTransitionForm({ disputes }: DisputeTransitionFormProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -123,7 +126,7 @@ export function DisputeTransitionForm({ disputes }: DisputeTransitionFormProps) 
       event: "start_review",
       bondDecision: "restore_lock",
       slashPercentage: 10,
-      resolutionSummary: "Conclusão operacional registrada.",
+      resolutionSummary: t("disputeForm.defaultResolution"),
     },
   });
 
@@ -156,7 +159,7 @@ export function DisputeTransitionForm({ disputes }: DisputeTransitionFormProps) 
   return (
     <Card className="p-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="text-2xl text-dusk">Mover disputa</h2>
+        <h2 className="text-2xl text-dusk">{t("disputeForm.moveDispute")}</h2>
         <div className="mt-4 grid gap-3">
           <div>
             <Select {...register("disputeId")}>
@@ -196,7 +199,7 @@ export function DisputeTransitionForm({ disputes }: DisputeTransitionFormProps) 
                     type="number"
                     min={1}
                     max={100}
-                    placeholder="% do bond a ser slashado (1-100)"
+                    placeholder={t("disputeForm.slashPlaceholder")}
                     {...register("slashPercentage")}
                   />
                   {errors.slashPercentage && <p className="text-sm text-red-500">{errors.slashPercentage.message}</p>}
@@ -209,7 +212,7 @@ export function DisputeTransitionForm({ disputes }: DisputeTransitionFormProps) 
             </>
           ) : null}
           <Button variant="ghost" type="submit" disabled={isPending}>
-            {isPending ? "Atualizando..." : "Atualizar disputa"}
+            {isPending ? t("disputeForm.updating") : t("disputeForm.updateDispute")}
           </Button>
         </div>
       </form>

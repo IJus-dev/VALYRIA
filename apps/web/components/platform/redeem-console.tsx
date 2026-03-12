@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useLocale } from "@/lib/locale-context";
 
 interface RedeemRequestFormProps {
   offerId: string;
@@ -17,6 +18,7 @@ interface RedeemRequestFormProps {
 }
 
 export function RedeemRequestForm({ offerId, holders, settlementWallet }: RedeemRequestFormProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [holderId, setHolderId] = useState(holders[0]?.id ?? "");
@@ -25,10 +27,10 @@ export function RedeemRequestForm({ offerId, holders, settlementWallet }: Redeem
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl text-dusk">Solicitar redeem</h2>
+      <h2 className="text-2xl text-dusk">{t("redeemConsole.requestRedeem")}</h2>
       {holders.length === 0 ? (
         <p className="mt-4 text-sm leading-6 text-ink/72">
-          O redeem só fica disponível depois que a oferta estiver preenchida e associada ao holder atual.
+          {t("redeemConsole.redeemAvailableInfo")}
         </p>
       ) : null}
       <div className="mt-4 grid gap-3">
@@ -41,12 +43,12 @@ export function RedeemRequestForm({ offerId, holders, settlementWallet }: Redeem
         </Select>
         <Input value={settlementWallet} readOnly />
         <Input
-          placeholder="Seed da wallet holder (opcional para testnet)"
+          placeholder={t("redeemConsole.seedPlaceholder")}
           value={walletSeed}
           onChange={(event) => setWalletSeed(event.target.value)}
         />
         <Input
-          placeholder="Janela de resposta em dias"
+          placeholder={t("redeemConsole.responseWindowPlaceholder")}
           value={responseWindowDays}
           onChange={(event) => setResponseWindowDays(event.target.value)}
         />
@@ -68,14 +70,14 @@ export function RedeemRequestForm({ offerId, holders, settlementWallet }: Redeem
 
               toast.success(
                 result.payload.redeem.settlementLedgerHash
-                  ? `Redeem criado: ${result.payload.redeem.id} :: settlement ${result.payload.redeem.settlementLedgerHash}`
-                  : `Redeem criado: ${result.payload.redeem.id}`
+                  ? `${t("redeemConsole.created")}${result.payload.redeem.id} :: settlement ${result.payload.redeem.settlementLedgerHash}`
+                  : `${t("redeemConsole.created")}${result.payload.redeem.id}`
               );
               router.refresh();
             });
           }}
         >
-          {isPending ? "Solicitando..." : "Solicitar redeem"}
+          {isPending ? t("redeemConsole.requesting") : t("redeemConsole.requestRedeem")}
         </Button>
       </div>
     </Card>
@@ -87,6 +89,7 @@ interface RedeemTransitionFormProps {
 }
 
 export function RedeemTransitionForm({ redeems }: RedeemTransitionFormProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [redeemId, setRedeemId] = useState(redeems[0]?.id ?? "");
@@ -95,7 +98,7 @@ export function RedeemTransitionForm({ redeems }: RedeemTransitionFormProps) {
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl text-dusk">Mover redeem</h2>
+      <h2 className="text-2xl text-dusk">{t("redeemConsole.moveRedeem")}</h2>
       <div className="mt-4 grid gap-3">
         <Select value={redeemId} onChange={(eventTarget) => setRedeemId(eventTarget.target.value)}>
           {redeems.map((redeem) => (
@@ -113,7 +116,7 @@ export function RedeemTransitionForm({ redeems }: RedeemTransitionFormProps) {
         </Select>
         {event === "attach_tracking" ? (
           <Input
-            placeholder="Código de rastreio"
+            placeholder={t("redeemConsole.trackingCodePlaceholder")}
             value={trackingCode}
             onChange={(eventTarget) => setTrackingCode(eventTarget.target.value)}
           />
@@ -142,7 +145,7 @@ export function RedeemTransitionForm({ redeems }: RedeemTransitionFormProps) {
             });
           }}
         >
-          {isPending ? "Atualizando..." : "Atualizar redeem"}
+          {isPending ? t("redeemConsole.updating") : t("redeemConsole.updateRedeem")}
         </Button>
       </div>
     </Card>
@@ -150,16 +153,17 @@ export function RedeemTransitionForm({ redeems }: RedeemTransitionFormProps) {
 }
 
 export function RedeemAutoAcceptForm() {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [referenceTime, setReferenceTime] = useState("");
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl text-dusk">Sweep de auto-accept</h2>
+      <h2 className="text-2xl text-dusk">{t("redeemConsole.autoAcceptSweep")}</h2>
       <div className="mt-4 grid gap-3">
         <Input
-          placeholder="Referência opcional em ISO datetime"
+          placeholder={t("redeemConsole.isoDatePlaceholder")}
           value={referenceTime}
           onChange={(event) => setReferenceTime(event.target.value)}
         />
@@ -182,7 +186,7 @@ export function RedeemAutoAcceptForm() {
             });
           }}
         >
-          {isPending ? "Processando..." : "Rodar sweep"}
+          {isPending ? t("redeemConsole.processing") : t("redeemConsole.runSweep")}
         </Button>
       </div>
     </Card>

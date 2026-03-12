@@ -7,8 +7,10 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useLocale } from "@/lib/locale-context";
 
 export function OtpSignInForm() {
+  const { t } = useLocale();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -16,14 +18,14 @@ export function OtpSignInForm() {
 
   return (
     <Card tone="soft" className="p-5">
-      <h3 className="text-2xl text-dusk">Entrar com OTP</h3>
+      <h3 className="text-2xl text-dusk">{t("otpSignIn.heading")}</h3>
       <p className="mt-2 body-copy">
-        A sessão usa cookie seguro do Auth.js, com usuário e estado persistidos no banco.
+        {t("otpSignIn.desc")}
       </p>
 
       <div className="mt-5 grid gap-4">
         <Input
-          placeholder="operações@valyria.io"
+          placeholder={t("otpSignIn.emailPlaceholder")}
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
@@ -52,7 +54,7 @@ export function OtpSignInForm() {
           }}
           disabled={isPending || !email || !code}
         >
-          {isPending ? "Autenticando..." : "Entrar"}
+          {isPending ? t("otpSignIn.authenticating") : t("otpSignIn.signIn")}
         </Button>
 
       </div>

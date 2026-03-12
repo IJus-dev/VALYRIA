@@ -8,6 +8,7 @@ import type { MarketSummary } from "@/lib/platform-types";
 import { PriceTrend } from "@/components/market/price-trend";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { useLocale } from "@/lib/locale-context";
 
 interface LiveMarketPanelProps {
   apiUrl: string;
@@ -29,6 +30,7 @@ function toWebSocketUrl(apiUrl: string): string {
 }
 
 export function LiveMarketPanel({ apiUrl, initialData, authToken }: LiveMarketPanelProps) {
+  const { t, locale } = useLocale();
   const queryClient = useQueryClient();
   const setConnectionState = useMarketStore((s) => s.setConnectionState);
 
@@ -73,8 +75,8 @@ export function LiveMarketPanel({ apiUrl, initialData, authToken }: LiveMarketPa
     <Card className="p-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <span className="eyebrow">WebSocket lane</span>
-          <h2 className="mt-3 text-3xl text-dusk">Snapshot vivo do market summary.</h2>
+          <span className="eyebrow">{t("liveMarket.eyebrow")}</span>
+          <h2 className="mt-3 text-3xl text-dusk">{t("liveMarket.heading")}</h2>
         </div>
         <Badge variant="outline">{connectionState}</Badge>
       </div>
@@ -100,7 +102,7 @@ export function LiveMarketPanel({ apiUrl, initialData, authToken }: LiveMarketPa
               <div className="label-caps text-clay">{offer.status}</div>
               <div className="mt-2 text-2xl text-dusk">{offer.series}</div>
               <div className="mt-3 text-sm text-ink/72">
-                {offer.quantity.toLocaleString("pt-BR")} unidades a R$ {offer.unitPrice.toFixed(2)}
+                {offer.quantity.toLocaleString(locale)} {t("liveMarket.unitsAt")} R$ {offer.unitPrice.toFixed(2)}
               </div>
             </div>
           ))}

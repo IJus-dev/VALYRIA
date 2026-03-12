@@ -1,8 +1,14 @@
 import { getAuditLogs, getDisputes, getRedeems } from "@/lib/api";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Card } from "@/components/ui/card";
 
 export default async function NotificationsPage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const [auditLogs, disputes, redeems] = await Promise.all([getAuditLogs(), getDisputes(), getRedeems()]);
   const items = [
     ...auditLogs.map((log) => ({
@@ -20,7 +26,7 @@ export default async function NotificationsPage() {
     ...redeems.map((redeem) => ({
       id: redeem.id,
       title: "redeem.status",
-      body: `${redeem.offerId} entrou em ${redeem.state}.`,
+      body: `${redeem.offerId} ${t("notifications.redeemEnteredState")} ${redeem.state}.`,
       createdAt: redeem.requestedAt
     }))
   ].sort((left, right) => right.createdAt.localeCompare(left.createdAt));
@@ -30,8 +36,8 @@ export default async function NotificationsPage() {
     <main className="flex flex-col gap-section pt-8">
       <section className="section-frame">
         <SectionHeading
-          eyebrow="NOTIFICATIONS"
-          heading="Alertas recentes."
+          eyebrow={t("notifications.eyebrow")}
+          heading={t("notifications.heading")}
         />
       </section>
 
@@ -48,7 +54,7 @@ export default async function NotificationsPage() {
       </div>
       {items.length > 20 && (
         <p className="text-center text-sm text-ink/50">
-          Mostrando 20 de {items.length} alertas.
+          {t("notifications.showing")} {items.length} {t("notifications.alerts")}
         </p>
       )}
     </main>

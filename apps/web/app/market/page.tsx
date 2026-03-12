@@ -4,8 +4,14 @@ import { MarketplaceGrid } from "@/components/market/marketplace-grid";
 import { MarketplaceHero } from "@/components/market/marketplace-hero";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getAmmPools, getMarketSummary } from "@/lib/api";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 
 export default async function MarketPage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const [summary, pools] = await Promise.all([
     getMarketSummary(),
     getAmmPools(),
@@ -20,9 +26,9 @@ export default async function MarketPage() {
 
       <section className="section-frame">
         <SectionHeading
-          eyebrow="FERRAMENTAS PRO"
-          heading="Dados de mercado e liquidez AMM."
-          description="Acompanhe o book em tempo real por WebSocket e execute swaps nos pools de liquidez complementar."
+          eyebrow={t("market.eyebrow")}
+          heading={t("market.heading")}
+          description={t("market.desc")}
         />
         <div className="grid gap-6 lg:grid-cols-2">
           <LiveMarketPanel apiUrl={apiUrl} initialData={summary} />

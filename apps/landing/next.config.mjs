@@ -7,6 +7,7 @@ const nextConfig = {
   images: { unoptimized: true },
   basePath: `/${repoName}`,
   assetPrefix: `/${repoName}`,
+  transpilePackages: ["@valyria/i18n"],
 };
 
 export default nextConfig;

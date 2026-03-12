@@ -3,6 +3,8 @@ import { Card } from "@/components/ui/card";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ProposalForm } from "@/components/platform/proposal-form";
 import { API_URL, buildOperatorHeaders } from "@/lib/platform-server";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 
 interface ProposalItem {
   id: string;
@@ -42,6 +44,10 @@ async function fetchUsers(): Promise<Array<{ id: string; name: string | null; em
 }
 
 export default async function GovernancePage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const [proposals, users] = await Promise.all([
     fetchProposals(),
     fetchUsers()
@@ -51,8 +57,8 @@ export default async function GovernancePage() {
     <main className="flex flex-col gap-section pt-8">
       <section className="section-frame">
         <SectionHeading
-          eyebrow="GOVERNANCE"
-          heading="Hub inicial de propostas para a camada DAO."
+          eyebrow={t("governance.eyebrow")}
+          heading={t("governance.heading")}
         />
       </section>
 

@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useLocale } from "@/lib/locale-context";
 
 interface ProofCreateFormProps {
   users: UserListItem[];
@@ -20,6 +21,7 @@ interface ProofCreateFormProps {
 }
 
 export function ProofCreateForm({ users, offers }: ProofCreateFormProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [mintOnLedger, setMintOnLedger] = useState(false);
@@ -53,14 +55,14 @@ export function ProofCreateForm({ users, offers }: ProofCreateFormProps) {
       try {
         parsedMetadata = data.metadata ? (JSON.parse(data.metadata) as Record<string, string | number | boolean>) : undefined;
       } catch {
-        toast.error("Metadata JSON inválido.");
+        toast.error(t("proofCreate.invalidJson"));
         return;
       }
 
       const resolvedUri = data.uri.trim() || (data.ipfsCid ? `ipfs://${data.ipfsCid}` : "");
 
       if (!resolvedUri) {
-        toast.error("Informe uma URI ou um CID de IPFS.");
+        toast.error(t("proofCreate.requireUriOrCid"));
         return;
       }
 
@@ -93,7 +95,7 @@ export function ProofCreateForm({ users, offers }: ProofCreateFormProps) {
   return (
     <Card className="p-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="text-2xl text-dusk">Registrar prova</h2>
+        <h2 className="text-2xl text-dusk">{t("proofCreate.heading")}</h2>
         <div className="mt-4 grid gap-3">
           <div>
             <Select {...register("userId")}>
@@ -142,19 +144,19 @@ export function ProofCreateForm({ users, offers }: ProofCreateFormProps) {
           </div>
           <label className="flex items-center gap-3 rounded-tile border border-line bg-paper/88 px-4 py-3 text-sm text-ink/72">
             <input type="checkbox" checked={mintOnLedger} onChange={(event) => setMintOnLedger(event.target.checked)} />
-            Mintar Proof NFT na XRPL agora
+            {t("proofCreate.mintNow")}
           </label>
           {mintOnLedger ? (
             <div>
               <Input
                 type="password"
-                placeholder="Seed da wallet do owner (opcional se for wallet de teste do .env)"
+                placeholder={t("proofCreate.seedPlaceholder")}
                 {...register("walletSeed")}
               />
             </div>
           ) : null}
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Registrando..." : "Registrar proof"}
+            {isPending ? t("proofCreate.registering") : t("proofCreate.heading")}
           </Button>
         </div>
       </form>

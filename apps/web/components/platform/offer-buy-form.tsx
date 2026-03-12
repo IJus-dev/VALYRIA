@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useLocale } from "@/lib/locale-context";
 
 interface OfferBuyFormProps {
   offer: OfferListItem;
@@ -16,6 +17,7 @@ interface OfferBuyFormProps {
 }
 
 export function OfferBuyForm({ offer, holders }: OfferBuyFormProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [holderId, setHolderId] = useState(holders[0]?.id ?? "");
@@ -23,9 +25,9 @@ export function OfferBuyForm({ offer, holders }: OfferBuyFormProps) {
 
   return (
     <Card className="p-6">
-      <h2 className="text-2xl text-dusk">Comprar no XRPL DEX</h2>
+      <h2 className="text-2xl text-dusk">{t("offerBuy.heading")}</h2>
       <p className="mt-3 text-sm leading-6 text-ink/72">
-        Esta ação envia um `OfferCreate` `fill-or-kill` para tomar a oferta inteira no ledger.
+        {t("offerBuy.desc")}
       </p>
       <div className="mt-4 grid gap-3">
         <Select
@@ -40,7 +42,7 @@ export function OfferBuyForm({ offer, holders }: OfferBuyFormProps) {
         </Select>
         <Input
           type="password"
-          placeholder="Seed da wallet do buyer (opcional se for a wallet de teste do .env)"
+          placeholder={t("offerBuy.seedPlaceholder")}
           value={walletSeed}
           onChange={(event) => setWalletSeed(event.target.value)}
         />
@@ -59,13 +61,13 @@ export function OfferBuyForm({ offer, holders }: OfferBuyFormProps) {
               }
 
               toast.success(
-                `Oferta preenchida por ${result.payload.offer.currentHolderId}${result.payload.offer.fillLedgerHash ? ` (${result.payload.offer.fillLedgerHash})` : ""}`
+                `${t("offerBuy.filled")}${result.payload.offer.currentHolderId}${result.payload.offer.fillLedgerHash ? ` (${result.payload.offer.fillLedgerHash})` : ""}`
               );
               router.refresh();
             });
           }}
         >
-          {isPending ? "Executando..." : "Comprar oferta"}
+          {isPending ? t("offerBuy.executing") : t("offerBuy.buy")}
         </Button>
       </div>
     </Card>

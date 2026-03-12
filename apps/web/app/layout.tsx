@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { auth } from "@/auth";
+import { getLocale } from "@/lib/get-locale";
+import { LocaleProvider } from "@/lib/locale-context";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { AuthStoreProvider } from "@/components/providers/auth-store-provider";
@@ -10,11 +12,12 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "VALYRIA",
-  description: "Infraestrutura XRPL-native para originação, negociação e liquidação de derivativos agrícolas."
+  description: "XRPL-native infrastructure for origination, trading, and settlement of agricultural derivatives."
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const session = await auth();
+  const locale = getLocale();
   const user = session?.user;
   const sessionData = user
     ? {
@@ -27,15 +30,17 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     : null;
 
   return (
-    <html lang="pt-BR">
+    <html lang={locale}>
       <body>
         <SessionProvider>
           <AuthStoreProvider session={sessionData}>
             <QueryProvider>
-              <div className="app-shell">
-                <SiteHeader session={session} />
-                {children}
-              </div>
+              <LocaleProvider locale={locale}>
+                <div className="app-shell">
+                  <SiteHeader session={session} />
+                  {children}
+                </div>
+              </LocaleProvider>
             </QueryProvider>
           </AuthStoreProvider>
         </SessionProvider>

@@ -1,18 +1,24 @@
 import { getAuditLogs, getDisputes, getRedeems, getUsers } from "@/lib/api";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 import { DisputeOpenForm, DisputeTransitionForm } from "@/components/platform/dispute-open-form";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { SectionHeading } from "@/components/ui/section-heading";
 
 export default async function DisputesPage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const [disputes, auditLogs, redeems, users] = await Promise.all([getDisputes(), getAuditLogs(), getRedeems(), getUsers()]);
 
   return (
     <main className="flex flex-col gap-section pt-8">
       <section className="section-frame">
         <SectionHeading
-          eyebrow="DISPUTE WORKFLOW"
-          heading="Tier 1, evidências e trilha de auditoria."
+          eyebrow={t("disputes.eyebrow")}
+          heading={t("disputes.heading")}
         />
       </section>
 
@@ -40,7 +46,7 @@ export default async function DisputesPage() {
         </div>
 
         <Card className="p-6">
-          <span className="eyebrow">Audit tail</span>
+          <span className="eyebrow">{t("disputes.auditTail")}</span>
           <div className="mt-4 grid gap-3">
             {auditLogs.slice(0, 10).map((log) => (
               <div key={log.id} className="flex items-center justify-between rounded-tile border border-line/45 bg-paper/72 px-4 py-3">
@@ -50,7 +56,7 @@ export default async function DisputesPage() {
             ))}
           </div>
           {auditLogs.length > 10 ? (
-            <p className="mt-3 text-sm text-ink/50">+{auditLogs.length - 10} registros anteriores</p>
+            <p className="mt-3 text-sm text-ink/50">+{auditLogs.length - 10} {t("disputes.previousRecords")}</p>
           ) : null}
         </Card>
       </section>

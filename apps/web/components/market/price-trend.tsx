@@ -2,6 +2,7 @@
 
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { chartTheme } from "@/design-tokens";
+import { useLocale } from "@/lib/locale-context";
 
 interface PriceTrendProps {
   data: Array<{
@@ -11,6 +12,8 @@ interface PriceTrendProps {
 }
 
 export function PriceTrend({ data }: PriceTrendProps) {
+  const { t, locale } = useLocale();
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={data} margin={{ top: 10, right: 12, bottom: 0, left: -12 }}>
@@ -23,7 +26,7 @@ export function PriceTrend({ data }: PriceTrendProps) {
             border: chartTheme.tooltipBorder,
             backgroundColor: chartTheme.tooltipBackground
           }}
-          formatter={(value: number) => [`R$ ${value.toFixed(2)}`, "Unit price"]}
+          formatter={(value: number) => [`R$ ${value.toFixed(2)}`, t("priceTrend.unitPrice")]}
         />
         <Line
           type="monotone"

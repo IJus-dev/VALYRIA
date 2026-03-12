@@ -6,67 +6,70 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { getMarketSummary } from "@/lib/api";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 
 export default async function DashboardPage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const summary = await getMarketSummary();
+
+  const features = [
+    { icon: Wheat, titleKey: "dashboard.seriesTokens.title", descKey: "dashboard.seriesTokens.desc" },
+    { icon: WalletCards, titleKey: "dashboard.bondVault.title", descKey: "dashboard.bondVault.desc" },
+    { icon: ShieldCheck, titleKey: "dashboard.redeemTraceable.title", descKey: "dashboard.redeemTraceable.desc" },
+  ];
+
+  const lifecycleItems = [
+    { label: t("dashboard.lifecycle.auth"), value: t("dashboard.lifecycle.authDesc") },
+    { label: t("dashboard.lifecycle.bond"), value: t("dashboard.lifecycle.bondDesc") },
+    { label: t("dashboard.lifecycle.market"), value: t("dashboard.lifecycle.marketDesc") },
+    { label: t("dashboard.lifecycle.redeem"), value: t("dashboard.lifecycle.redeemDesc") },
+  ];
 
   return (
     <main className="flex flex-col gap-section pt-8">
       <section className="hero-grid">
         <Card className="overflow-hidden p-8 sm:p-10">
           <div className="flex flex-wrap items-center gap-3">
-            <Badge>Platform dashboard</Badge>
-            <span className="eyebrow">Bond - Offer - Trade - Redeem</span>
+            <Badge>{t("dashboard.badge")}</Badge>
+            <span className="eyebrow">{t("dashboard.eyebrow")}</span>
           </div>
 
           <div className="mt-6 max-w-3xl">
             <h1 className="text-5xl leading-[0.95] text-dusk sm:text-6xl">
-              Operação do MVP com séries auditáveis e trilha XRPL.
+              {t("dashboard.heading")}
             </h1>
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <ButtonLink href="/offers/new">
-              Criar oferta
+              {t("dashboard.createOffer")}
               <ArrowRight className="h-4 w-4" />
             </ButtonLink>
-            <ButtonLink href="/market" variant="ghost">Abrir market lane</ButtonLink>
+            <ButtonLink href="/market" variant="ghost">{t("dashboard.openMarketLane")}</ButtonLink>
           </div>
 
           <div className="mt-10 grid gap-4 sm:grid-cols-3">
-            {[
-              {
-                icon: Wheat,
-                title: "Series tokens",
-                description: "Emissão por série com alias legível e currency hex de 20 bytes."
-              },
-              {
-                icon: WalletCards,
-                title: "Bond vault",
-                description: "Garantia custodial auditável com DepositAuth e preview de CredentialIDs."
-              },
-              {
-                icon: ShieldCheck,
-                title: "Redeem rastreável",
-                description: "Entrega híbrida com NFT de prova e SLA configurável por commodity."
-              }
-            ].map((item) => (
-              <div key={item.title} className="rounded-tile border border-line/45 bg-sand/55 p-4">
+            {features.map((item) => (
+              <div key={item.titleKey} className="rounded-tile border border-line/45 bg-sand/55 p-4">
                 <item.icon className="h-5 w-5 text-moss" />
-                <h3 className="mt-4 text-2xl text-dusk">{item.title}</h3>
-                <p className="mt-2 body-copy">{item.description}</p>
+                <h3 className="mt-4 text-2xl text-dusk">{t(item.titleKey)}</h3>
+                <p className="mt-2 body-copy">{t(item.descKey)}</p>
               </div>
             ))}
           </div>
         </Card>
 
         <Card className="p-6 sm:p-8">
-          <span className="eyebrow">XRPL account topology</span>
-          <h2 className="mt-4 text-3xl text-dusk">Contas segregadas desde o bootstrap.</h2>
+          <span className="eyebrow">{t("dashboard.topology.eyebrow")}</span>
+          <h2 className="mt-4 text-3xl text-dusk">{t("dashboard.topology.heading")}</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             <Badge variant="outline">network: {summary.networkStatus.mode}</Badge>
             <Badge variant="outline">
-              {summary.networkStatus.connected ? "validated link active" : "bridge standby"}
+              {summary.networkStatus.connected ? t("dashboard.validatedLink") : t("dashboard.bridgeStandby")}
             </Badge>
           </div>
           <div className="mt-6 grid gap-3">
@@ -92,10 +95,10 @@ export default async function DashboardPage() {
         <Card className="p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <span className="eyebrow">Market snapshot</span>
-              <h2 className="mt-3 text-3xl text-dusk">Book inicial carregado pela API da plataforma.</h2>
+              <span className="eyebrow">{t("dashboard.marketSnapshot.eyebrow")}</span>
+              <h2 className="mt-3 text-3xl text-dusk">{t("dashboard.marketSnapshot.heading")}</h2>
             </div>
-            <Badge variant="outline">API-sourced</Badge>
+            <Badge variant="outline">{t("dashboard.marketSnapshot.badge")}</Badge>
           </div>
 
           <div className="mt-6 h-72">
@@ -109,7 +112,7 @@ export default async function DashboardPage() {
 
         <div className="grid gap-cluster">
           <Card className="p-6">
-            <span className="eyebrow">Core lanes</span>
+            <span className="eyebrow">{t("dashboard.coreLanes")}</span>
             <div className="mt-5 grid gap-4">
               {summary.lifecycle.map((item) => (
                 <div key={item.step} className="rounded-tile border border-line/45 bg-paper/72 p-4">
@@ -124,14 +127,9 @@ export default async function DashboardPage() {
           </Card>
 
           <Card className="p-6">
-            <span className="eyebrow">Lifecycle status</span>
+            <span className="eyebrow">{t("dashboard.lifecycle.eyebrow")}</span>
             <div className="mt-4 grid gap-3">
-              {[
-                { label: "Auth", value: "Wallet challenge + JWT" },
-                { label: "Bond", value: "Garantia custodial em VEX" },
-                { label: "Market", value: "DEX + AMM pools" },
-                { label: "Redeem", value: "Tracking + auto-accept" },
-              ].map((item) => (
+              {lifecycleItems.map((item) => (
                 <div key={item.label} className="flex items-center justify-between rounded-tile border border-line/45 bg-paper/72 px-4 py-3">
                   <span className="label-caps">{item.label}</span>
                   <span className="text-sm text-moss">{item.value}</span>

@@ -9,12 +9,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useLocale } from "@/lib/locale-context";
 
 interface WalletLinkPanelProps {
   session: Session | null;
 }
 
 export function WalletLinkPanel({ session }: WalletLinkPanelProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [walletAddress, setWalletAddress] = useState(session?.user?.walletAddress ?? "");
   const [challengeId, setChallengeId] = useState("");
@@ -27,12 +29,12 @@ export function WalletLinkPanel({ session }: WalletLinkPanelProps) {
     <Card tone="soft" className="p-5">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h3 className="text-2xl text-dusk">Wallet proof</h3>
+          <h3 className="text-2xl text-dusk">{t("walletLink.heading")}</h3>
           <p className="mt-2 body-copy">
-            Gere um challenge, assine fora da plataforma e envie assinatura + public key.
+            {t("walletLink.desc")}
           </p>
         </div>
-        <Badge variant="outline">XRPL challenge</Badge>
+        <Badge variant="outline">{t("walletLink.badge")}</Badge>
       </div>
 
       <div className="mt-5 grid gap-4">
@@ -73,7 +75,7 @@ export function WalletLinkPanel({ session }: WalletLinkPanelProps) {
             });
           }}
         >
-          {isPending ? "Gerando..." : "Gerar challenge"}
+          {isPending ? t("walletLink.generating") : t("walletLink.generate")}
         </Button>
 
         <Textarea
@@ -84,13 +86,13 @@ export function WalletLinkPanel({ session }: WalletLinkPanelProps) {
         />
 
         <Input
-          placeholder="Public key"
+          placeholder={t("walletLink.publicKeyPlaceholder")}
           value={publicKey}
           onChange={(event) => setPublicKey(event.target.value)}
         />
         <Textarea
           className="min-h-24"
-          placeholder="Signature"
+          placeholder={t("walletLink.signaturePlaceholder")}
           value={signature}
           onChange={(event) => setSignature(event.target.value)}
         />
@@ -123,7 +125,7 @@ export function WalletLinkPanel({ session }: WalletLinkPanelProps) {
             });
           }}
         >
-          {isPending ? "Verificando..." : "Verificar assinatura"}
+          {isPending ? t("walletLink.verifying") : t("walletLink.verify")}
         </Button>
 
       </div>

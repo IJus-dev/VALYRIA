@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-table";
 import { ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/lib/locale-context";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, unknown>[];
@@ -23,6 +24,7 @@ export function DataTable<TData>({
   data,
   className,
 }: DataTableProps<TData>) {
+  const { t } = useLocale();
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
@@ -80,7 +82,7 @@ export function DataTable<TData>({
                 colSpan={columns.length}
                 className="px-4 py-8 text-center text-sm text-ink/40"
               >
-                Nenhum registro encontrado.
+                {t("table.empty")}
               </td>
             </tr>
           ) : (

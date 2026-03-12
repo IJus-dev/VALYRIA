@@ -6,6 +6,8 @@ import {
 } from "@/lib/commodity-catalog";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 
 interface OfferProductCardProps {
   offer: {
@@ -20,38 +22,42 @@ interface OfferProductCardProps {
   };
 }
 
-const STATUS_LABEL: Record<string, string> = {
-  listed: "Listada",
-  partially_filled: "Parcial",
-  filled: "Preenchida",
-};
-
 const STATUS_VARIANT: Record<string, "outline" | "default"> = {
   listed: "outline",
   partially_filled: "default",
   filled: "default",
 };
 
-const LANE_LABEL: Record<string, string> = {
-  local: "Local",
-  xrpl_dex: "XRPL DEX",
-};
-
-const expiryFormatter = new Intl.DateTimeFormat("pt-BR", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
 export function OfferProductCard({ offer }: OfferProductCardProps) {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
+  const STATUS_LABEL: Record<string, string> = {
+    listed: t("offerCard.listed"),
+    partially_filled: t("offerCard.partial"),
+    filled: t("offerCard.filled"),
+  };
+
+  const LANE_LABEL: Record<string, string> = {
+    local: t("offerCard.local"),
+    xrpl_dex: t("offerCard.xrplDex"),
+  };
+
+  const expiryFormatter = new Intl.DateTimeFormat(locale, {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   const meta = getCommodityFromAlias(offer.series);
   const parsed = parseSeriesAlias(offer.series);
   const Icon = meta?.icon;
 
   const regionName = parsed ? getRegionName(parsed.region) : null;
-  const formattedQuantity = offer.quantity.toLocaleString("pt-BR");
+  const formattedQuantity = offer.quantity.toLocaleString(locale);
   const formattedUnitPrice = `R$ ${offer.unitPrice.toFixed(2)}`;
-  const formattedNotional = `R$ ${offer.notional.toLocaleString("pt-BR", {
+  const formattedNotional = `R$ ${offer.notional.toLocaleString(locale, {
     minimumFractionDigits: 2,
   })}`;
   const formattedExpiry = expiryFormatter.format(new Date(offer.expiresAt));
@@ -93,21 +99,21 @@ export function OfferProductCard({ offer }: OfferProductCardProps) {
 
         {parsed ? (
           <span className="text-sm text-ink/65">
-            Regi&atilde;o: {regionName} &middot; Safra: {parsed.year}/
+            {t("offerCard.region")}: {regionName} &middot; {t("offerCard.harvest")}: {parsed.year}/
             {parsed.cycle}
           </span>
         ) : null}
 
         {parsed && meta ? (
           <span className="text-sm text-ink/65">
-            Grade: {parsed.grade} &middot; {meta.unit}
+            {t("offerCard.grade")}: {parsed.grade} &middot; {meta.unit}
           </span>
         ) : null}
 
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-tile border border-line/45 bg-paper/72 p-frame">
             <span className="text-xs font-semibold uppercase tracking-eyebrow text-clay">
-              Quantidade
+              {t("offerCard.quantity")}
             </span>
             <p className="mt-1 text-lg font-semibold text-dusk">
               {formattedQuantity}
@@ -115,7 +121,7 @@ export function OfferProductCard({ offer }: OfferProductCardProps) {
           </div>
           <div className="rounded-tile border border-line/45 bg-paper/72 p-frame">
             <span className="text-xs font-semibold uppercase tracking-eyebrow text-clay">
-              Pre&ccedil;o unit&aacute;rio
+              {t("offerCard.unitPrice")}
             </span>
             <p className="mt-1 text-lg font-semibold text-dusk">
               {formattedUnitPrice}
@@ -124,7 +130,7 @@ export function OfferProductCard({ offer }: OfferProductCardProps) {
         </div>
 
         <p className="text-lg font-semibold text-dusk">
-          Valor total: {formattedNotional}
+          {t("offerCard.totalValue")}: {formattedNotional}
         </p>
 
         <div className="flex items-center justify-between">
@@ -133,7 +139,7 @@ export function OfferProductCard({ offer }: OfferProductCardProps) {
         </div>
 
         <span className="text-sm font-semibold text-moss">
-          Ver detalhes &rarr;
+          {t("offerCard.viewDetails")} &rarr;
         </span>
       </Card>
     </Link>

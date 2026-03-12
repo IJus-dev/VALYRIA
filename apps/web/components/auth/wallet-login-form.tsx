@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useLocale } from "@/lib/locale-context";
 
 function utf8ToHex(input: string): string {
   return Array.from(new TextEncoder().encode(input))
@@ -18,6 +19,7 @@ function utf8ToHex(input: string): string {
 }
 
 export function WalletLoginForm() {
+  const { t } = useLocale();
   const router = useRouter();
   const [walletSeed, setWalletSeed] = useState("");
   const [loading, setLoading] = useState(false);
@@ -122,18 +124,17 @@ export function WalletLoginForm() {
   return (
     <Card tone="soft" className="p-6">
       <div className="flex items-center gap-3">
-        <Badge>Wallet Login</Badge>
-        <span className="text-xs text-ink/55">Testnet only</span>
+        <Badge>{t("walletLogin.badge")}</Badge>
+        <span className="text-xs text-ink/55">{t("walletLogin.testnet")}</span>
       </div>
 
       {step === "connect" ? (
         <div className="mt-5 flex flex-col gap-4">
           <p className="text-sm text-ink/70">
-            Cole a seed da sua wallet XRPL testnet. A seed é usada apenas
-            localmente para assinar o challenge — nunca é enviada ao servidor.
+            {t("walletLogin.instructions")}
           </p>
           <div>
-            <span className="label-caps mb-1 block">Wallet seed</span>
+            <span className="label-caps mb-1 block">{t("walletLogin.seedLabel")}</span>
             <Input
               type="password"
               placeholder="sEdXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -142,27 +143,27 @@ export function WalletLoginForm() {
             />
           </div>
           <Button onClick={handleGenerateChallenge} disabled={loading}>
-            {loading ? "Gerando challenge..." : "Conectar wallet"}
+            {loading ? t("walletLogin.generating") : t("walletLogin.connect")}
           </Button>
         </div>
       ) : (
         <div className="mt-5 flex flex-col gap-4">
           <div className="rounded-tile border border-line/45 bg-paper/72 p-4">
-            <span className="label-caps">Wallet</span>
+            <span className="label-caps">{t("walletLogin.wallet")}</span>
             <p className="mt-1 font-mono text-sm text-dusk">
               {challengeData?.walletAddress}
             </p>
           </div>
 
           <div className="rounded-tile border border-line/45 bg-paper/72 p-4">
-            <span className="label-caps">Challenge message</span>
+            <span className="label-caps">{t("walletLogin.challengeMessage")}</span>
             <pre className="mt-2 whitespace-pre-wrap font-mono text-xs text-ink/65">
               {challengeData?.message}
             </pre>
           </div>
 
           <Button onClick={handleSignAndLogin} disabled={loading}>
-            {loading ? "Verificando assinatura..." : "Assinar e entrar"}
+            {loading ? t("walletLogin.verifying") : t("walletLogin.signAndEnter")}
           </Button>
 
           <button
@@ -173,7 +174,7 @@ export function WalletLoginForm() {
             }}
             className="text-sm text-ink/55 underline"
           >
-            Voltar
+            {t("walletLogin.back")}
           </button>
         </div>
       )}

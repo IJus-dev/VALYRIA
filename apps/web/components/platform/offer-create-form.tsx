@@ -13,12 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useLocale } from "@/lib/locale-context";
 
 interface OfferCreateFormProps {
   users: UserListItem[];
 }
 
 export function OfferCreateForm({ users }: OfferCreateFormProps) {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const producers = users.filter((user) => user.state === "producer_approved");
@@ -73,17 +75,17 @@ export function OfferCreateForm({ users }: OfferCreateFormProps) {
     try {
       return buildSeriesAlias(descriptor);
     } catch {
-      return "descriptor inválido";
+      return t("offerCreate.invalidDescriptor");
     }
-  }, [descriptor]);
+  }, [descriptor, t]);
 
   const currencyHex = useMemo(() => {
     try {
       return encodeSeriesCurrencyCode(descriptor);
     } catch {
-      return "currency_hex inválido";
+      return t("offerCreate.invalidCurrencyHex");
     }
-  }, [descriptor]);
+  }, [descriptor, t]);
 
   const onSubmit = (data: OfferCreateInput) => {
     startTransition(async () => {
@@ -103,8 +105,8 @@ export function OfferCreateForm({ users }: OfferCreateFormProps) {
 
       toast.success(
         result.payload.executionLane === "xrpl_dex"
-          ? `Oferta criada no XRPL DEX: ${result.payload.series.alias}${result.payload.ledgerHash ? ` (${result.payload.ledgerHash})` : ""}`
-          : `Oferta criada localmente: ${result.payload.series.alias}`
+          ? `${t("offerCreate.createdXrpl")}${result.payload.series.alias}${result.payload.ledgerHash ? ` (${result.payload.ledgerHash})` : ""}`
+          : `${t("offerCreate.createdLocal")}${result.payload.series.alias}`
       );
       router.push(`/offers/${result.payload.id}`);
       router.refresh();
@@ -115,7 +117,7 @@ export function OfferCreateForm({ users }: OfferCreateFormProps) {
     <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
       <Card className="p-8">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h2 className="text-3xl text-dusk">Criar oferta real no livro</h2>
+          <h2 className="text-3xl text-dusk">{t("offerCreate.heading")}</h2>
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             <div>
               <Select {...register("producerId")}>
@@ -170,21 +172,21 @@ export function OfferCreateForm({ users }: OfferCreateFormProps) {
             <div className="md:col-span-2">
               <Input
                 type="password"
-                placeholder="Seed da wallet do produtor (opcional se for a wallet de teste do .env)"
+                placeholder={t("offerCreate.seedPlaceholder")}
                 {...register("walletSeed")}
               />
             </div>
           </div>
 
           <Button className="mt-6" type="submit" disabled={isPending}>
-            {isPending ? "Publicando..." : "Publicar oferta"}
+            {isPending ? t("offerCreate.publishing") : t("offerCreate.publish")}
           </Button>
         </form>
       </Card>
 
       <div className="grid gap-6">
         <Card className="p-6">
-          <span className="eyebrow">Series preview</span>
+          <span className="eyebrow">{t("offerCreate.seriesPreview")}</span>
           <h3 className="mt-4 text-3xl text-dusk">{alias}</h3>
           <div className="mt-4 rounded-tile border border-line/45 bg-dusk p-4 font-mono text-xs text-sand">{currencyHex}</div>
         </Card>

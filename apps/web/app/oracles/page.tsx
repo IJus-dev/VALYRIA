@@ -1,17 +1,23 @@
 import { getOracles } from "@/lib/api";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 import { OraclePublishForm } from "@/components/platform/oracle-publish-form";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Card } from "@/components/ui/card";
 
 export default async function OraclesPage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const oracles = await getOracles();
 
   return (
     <main className="flex flex-col gap-section pt-8">
       <section className="section-frame">
         <SectionHeading
-          eyebrow="ORACLE DESK"
-          heading="Feed de preços publicados."
+          eyebrow={t("oracles.eyebrow")}
+          heading={t("oracles.heading")}
         />
       </section>
 
@@ -25,7 +31,7 @@ export default async function OraclesPage() {
               <div className="mt-4 text-4xl text-dusk">R$ {oracle.value.toFixed(2)}</div>
               <div className="mt-3 text-sm text-ink/72">{oracle.source}</div>
               <div className="mt-2 text-sm text-moss">
-                {new Intl.DateTimeFormat("pt-BR", {
+                {new Intl.DateTimeFormat(locale, {
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric"

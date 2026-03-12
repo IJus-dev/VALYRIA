@@ -68,6 +68,9 @@ importers:
 
   apps/landing:
     dependencies:
+      '@valyria/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -132,6 +135,9 @@ importers:
       '@valyria/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@valyria/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -197,6 +203,8 @@ importers:
   packages/database: {}
 
   packages/domain: {}
+
+  packages/i18n: {}
 
   packages/xrpl:
     dependencies:

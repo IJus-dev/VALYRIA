@@ -7,27 +7,35 @@ import { WalletLinkPanel } from "@/components/auth/wallet-link-panel";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 
 export default async function LoginPage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const session = await auth();
+
+  const steps = [
+    { step: "1", label: t("login.step.challenge"), detail: t("login.step.challengeDesc") },
+    { step: "2", label: t("login.step.signature"), detail: t("login.step.signatureDesc") },
+    { step: "3", label: t("login.step.session"), detail: t("login.step.sessionDesc") },
+  ];
 
   return (
     <main className="grid gap-section pt-8 lg:grid-cols-[0.95fr_1.05fr]">
       <Card className="p-8">
-        <Badge>XRPL-native auth</Badge>
+        <Badge>{t("login.badge")}</Badge>
         <SectionHeading
           className="mt-5"
-          heading="Conecte sua wallet XRPL para entrar."
+          heading={t("login.heading")}
           titleTag="h1"
-          description="Cole a seed da testnet, assine o challenge e entre. A seed nunca sai do navegador."
+          description={t("login.desc")}
         />
 
         <div className="mt-8 grid gap-3">
-          {[
-            { step: "1", label: "Challenge", detail: "Desafio único e expirável" },
-            { step: "2", label: "Assinatura", detail: "Prova de posse da wallet" },
-            { step: "3", label: "Sessão JWT", detail: "Cookie seguro, sem seed no servidor" },
-          ].map((item) => (
+          {steps.map((item) => (
             <div key={item.step} className="flex items-center gap-4 rounded-tile border border-line/45 bg-paper/88 px-5 py-4">
               <span className="text-2xl text-dusk/40">{item.step}</span>
               <div>
@@ -42,8 +50,8 @@ export default async function LoginPage() {
       <div className="flex flex-col gap-6">
         <Card className="p-8">
           <SectionHeading
-            eyebrow="LOGIN PRINCIPAL"
-            heading="Entrar com wallet XRPL."
+            eyebrow={t("login.mainLogin.eyebrow")}
+            heading={t("login.mainLogin.heading")}
           />
           <div className="mt-6">
             <WalletLoginForm />
@@ -59,9 +67,9 @@ export default async function LoginPage() {
 
         <Card tone="outline" className="p-6">
           <SectionHeading
-            eyebrow="ALTERNATIVO"
-            heading="Login por email + OTP"
-            description="Método alternativo para acesso sem wallet."
+            eyebrow={t("login.altLogin.eyebrow")}
+            heading={t("login.altLogin.heading")}
+            description={t("login.altLogin.desc")}
           />
           <div className="mt-5 grid gap-4">
             <OtpRequestForm />
@@ -70,11 +78,11 @@ export default async function LoginPage() {
         </Card>
 
         <div className="rounded-tile border border-dashed border-clay/60 bg-clay/5 p-5">
-          <div className="label-caps">Sessão atual</div>
+          <div className="label-caps">{t("login.currentSession")}</div>
           <p className="mt-3 body-copy">
             {session?.user
               ? `${session.user.walletAddress ?? session.user.email ?? session.user.id} (${session.user.state ?? "unknown"})`
-              : "Nenhuma sessão ativa."}
+              : t("login.noActiveSession")}
           </p>
           {session?.user ? (
             <div className="mt-3 flex flex-wrap gap-2">

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useLocale } from "@/lib/locale-context";
 
 interface AmmSwapPanelProps {
   pools: AmmPoolListItem[];
@@ -28,6 +29,7 @@ interface AmmQuotePayload {
 }
 
 export function AmmSwapPanel({ pools }: AmmSwapPanelProps) {
+  const { t, locale } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [poolId, setPoolId] = useState(pools[0]?.id ?? "");
@@ -42,8 +44,8 @@ export function AmmSwapPanel({ pools }: AmmSwapPanelProps) {
     <Card className="p-6">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <span className="eyebrow">AMM v1</span>
-          <h2 className="mt-3 text-3xl text-dusk">Quote e swap local no pool constante.</h2>
+          <span className="eyebrow">{t("amm.eyebrow")}</span>
+          <h2 className="mt-3 text-3xl text-dusk">{t("amm.heading")}</h2>
         </div>
       </div>
 
@@ -92,11 +94,11 @@ export function AmmSwapPanel({ pools }: AmmSwapPanelProps) {
                 }
 
                 setQuote(result.payload.quote);
-                toast.success(`Quote pronta para ${result.payload.pool.pair}.`);
+                toast.success(`${t("amm.quoteReady")} ${result.payload.pool.pair}.`);
               });
             }}
           >
-            {isPending ? "Calculando..." : "Gerar quote"}
+            {isPending ? t("amm.calculating") : t("amm.generateQuote")}
           </Button>
 
           <Button
@@ -115,12 +117,12 @@ export function AmmSwapPanel({ pools }: AmmSwapPanelProps) {
                 }
 
                 setQuote(result.payload.quote);
-                toast.success(`Swap executado em ${result.payload.pool.pair}.`);
+                toast.success(`${t("amm.swapExecuted")} ${result.payload.pool.pair}.`);
                 router.refresh();
               });
             }}
           >
-            {isPending ? "Executando..." : "Executar swap"}
+            {isPending ? t("amm.executing") : t("amm.executeSwap")}
           </Button>
         </div>
       </div>
@@ -128,25 +130,25 @@ export function AmmSwapPanel({ pools }: AmmSwapPanelProps) {
       {selectedPool ? (
         <div className="mt-6 grid gap-3 md:grid-cols-2">
           <div className="rounded-tile border border-line/45 bg-paper/72 p-4">
-            <div className="label-caps text-clay">Reserve {selectedPool.baseAsset}</div>
-            <div className="mt-2 text-2xl text-dusk">{selectedPool.baseReserve.toLocaleString("pt-BR")}</div>
+            <div className="label-caps text-clay">{t("amm.reserve")} {selectedPool.baseAsset}</div>
+            <div className="mt-2 text-2xl text-dusk">{selectedPool.baseReserve.toLocaleString(locale)}</div>
           </div>
           <div className="rounded-tile border border-line/45 bg-paper/72 p-4">
-            <div className="label-caps text-clay">Reserve {selectedPool.quoteAsset}</div>
-            <div className="mt-2 text-2xl text-dusk">{selectedPool.quoteReserve.toLocaleString("pt-BR")}</div>
+            <div className="label-caps text-clay">{t("amm.reserve")} {selectedPool.quoteAsset}</div>
+            <div className="mt-2 text-2xl text-dusk">{selectedPool.quoteReserve.toLocaleString(locale)}</div>
           </div>
         </div>
       ) : null}
 
       {quote ? (
         <div className="mt-6 rounded-tile border border-line/45 bg-sand/40 p-4 text-sm leading-6 text-ink/72">
-          Saída estimada: {quote.outputAmount.toFixed(4)} {quote.outputAsset}
+          {t("amm.estimatedOutput")} {quote.outputAmount.toFixed(4)} {quote.outputAsset}
           <br />
-          Fee: {quote.feeAmount.toFixed(4)}
+          {t("amm.fee")} {quote.feeAmount.toFixed(4)}
           <br />
-          Preço de execução: {quote.executionPrice.toFixed(6)}
+          {t("amm.executionPrice")} {quote.executionPrice.toFixed(6)}
           <br />
-          Impacto: {quote.priceImpactPct.toFixed(4)}%
+          {t("amm.impact")} {quote.priceImpactPct.toFixed(4)}%
         </div>
       ) : null}
 

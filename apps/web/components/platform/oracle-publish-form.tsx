@@ -11,8 +11,10 @@ import type { OracleListItem } from "@/lib/platform-types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useLocale } from "@/lib/locale-context";
 
 export function OraclePublishForm() {
+  const { t } = useLocale();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -52,8 +54,8 @@ export function OraclePublishForm() {
 
       toast.success(
         result.payload.ledger?.submitted
-          ? `Oracle publicado em testnet: ${result.payload.price.symbol} = ${result.payload.price.value}. hash=${result.payload.ledger.hash ?? "n/a"}`
-          : `Oracle publicado: ${result.payload.price.symbol} = ${result.payload.price.value}`
+          ? `${t("oracleForm.publishedTestnet")}${result.payload.price.symbol} = ${result.payload.price.value}. hash=${result.payload.ledger.hash ?? "n/a"}`
+          : `${t("oracleForm.published")}${result.payload.price.symbol} = ${result.payload.price.value}`
       );
       router.refresh();
     });
@@ -62,7 +64,7 @@ export function OraclePublishForm() {
   return (
     <Card className="p-6">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <h2 className="text-2xl text-dusk">Publicar oracle price</h2>
+        <h2 className="text-2xl text-dusk">{t("oracleForm.heading")}</h2>
         <div className="mt-4 grid gap-3">
           <div>
             <Input {...register("symbol")} />
@@ -81,7 +83,7 @@ export function OraclePublishForm() {
             {errors.scale && <p className="text-sm text-red-500">{errors.scale.message}</p>}
           </div>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Publicando..." : "Publicar feed"}
+            {isPending ? t("oracleForm.publishing") : t("oracleForm.publishFeed")}
           </Button>
         </div>
       </form>

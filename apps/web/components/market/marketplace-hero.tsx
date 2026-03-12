@@ -1,6 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 
 interface MarketplaceHeroProps {
   metrics: Array<{
@@ -11,12 +13,16 @@ interface MarketplaceHeroProps {
 }
 
 export function MarketplaceHero({ metrics }: MarketplaceHeroProps) {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   return (
     <section className="flex flex-col gap-6">
       <SectionHeading
-        eyebrow="MERCADO VALYRIA"
-        heading="Contratos agrícolas com garantia, prova e entrega auditável."
-        description="Explore ofertas de séries tokenizadas de commodities brasileiras. Cada oferta nasce com bond travado, prova verificável e rota operacional até a entrega física."
+        eyebrow={t("marketplace.hero.eyebrow")}
+        heading={t("marketplace.hero.heading")}
+        description={t("marketplace.hero.desc")}
         titleTag="h1"
       />
 

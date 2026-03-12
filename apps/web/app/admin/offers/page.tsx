@@ -1,10 +1,16 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getAuditLogs, getOffers, getProofs, getRedeems, getUsers } from "@/lib/api";
+import { getLocale } from "@/lib/get-locale";
+import { getWebDictionary } from "@valyria/i18n/web";
 import { AdminOffersTable } from "@/components/tables/admin-offers-table";
 import { SectionHeading } from "@/components/ui/section-heading";
 
 export default async function AdminOffersPage() {
+  const locale = getLocale();
+  const dict = getWebDictionary(locale);
+  const t = (key: string) => dict[key] ?? key;
+
   const session = await auth();
 
   if (!session) {
@@ -32,8 +38,8 @@ export default async function AdminOffersPage() {
     <main className="flex flex-col gap-section pt-8">
       <section className="section-frame">
         <SectionHeading
-          eyebrow="PRODUCER ADMIN"
-          heading="Gestão operacional de ofertas, provas e settle queue."
+          eyebrow={t("admin.eyebrow")}
+          heading={t("admin.heading")}
         />
       </section>
 
@@ -51,7 +57,7 @@ export default async function AdminOffersPage() {
             executionLane: offer.executionLane,
             proofCount,
             redeemCount,
-            latestEvent: latestEvent?.action ?? "sem trilha",
+            latestEvent: latestEvent?.action ?? t("admin.noTrail"),
           };
         })}
       />
