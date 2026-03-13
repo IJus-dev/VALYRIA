@@ -31,7 +31,7 @@ const equipe = [
   { nome: "Gustavo Caparroz", papel: "Founder (Wisebit)", foto: "/equipe/Gustavo.jpg", iniciais: "GC", cor: "bg-moss", fotoOffset: "-20px" },
   { nome: "Pedro Sola", papel: "PO", foto: "/equipe/Pedro.jpg", iniciais: "PS", cor: "bg-clay" },
   { nome: "Renzo", papel: "Dev", foto: "/equipe/Renzo.jpg", iniciais: "RZ", cor: "bg-dusk" },
-  { nome: "Marcos Vergueiro", papel: "Cloud & Data Analyst", foto: "/equipe/Marcus.jpg", iniciais: "MV", cor: "bg-moss" },
+  { nome: "Marcos Scheunemann", papel: "Cloud & Data Analyst", foto: "/equipe/Marcus.jpg", iniciais: "MV", cor: "bg-moss" },
   { nome: "Beatriz", papel: "Legal", foto: "/equipe/Beatriz.jpg", iniciais: "BZ", cor: "bg-clay" },
 ];
 
