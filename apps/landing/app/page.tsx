@@ -28,7 +28,7 @@ const equipe = [
   { nome: "Roberto", papel: "Advisor", foto: "/equipe/Roberto.jpg", iniciais: "RC", cor: "bg-moss", linkedin: "https://www.linkedin.com/in/robertocaparroz/" },
   { nome: "Daniel", papel: "CEO", foto: "/equipe/Daniel.jpg", iniciais: "DM", cor: "bg-clay", linkedin: "https://www.linkedin.com/in/d4n13lm4t0s/" },
   { nome: "Leonardo", papel: "Founder (Wisebit) & Dev", foto: "/equipe/Leo.jpg", iniciais: "LC", cor: "bg-dusk", linkedin: "https://www.linkedin.com/in/leonardo-caparroz-20b5b93b7/" },
-  { nome: "Gustavo", papel: "Founder (Wisebit)", foto: "/equipe/Gustavo.jpg", iniciais: "GC", cor: "bg-moss", fotoOffset: "-20px" },
+  { nome: "Gustavo", papel: "Founder (Wisebit)", foto: "/equipe/Gustavo.jpg", iniciais: "GC", cor: "bg-moss", fotoOffset: "-20px", linkedin: "https://www.linkedin.com/in/gustavo-roberti-caparroz-5493823b7/" },
   { nome: "Pedro", papel: "PO", foto: "/equipe/Pedro.jpg", iniciais: "PS", cor: "bg-clay", linkedin: "https://www.linkedin.com/in/pedro-aur%C3%A9lio-sola-da-silva-rodrigues-65a238276/" },
   { nome: "Renzo", papel: "Dev", foto: "/equipe/Renzo.jpg", iniciais: "RZ", cor: "bg-dusk", linkedin: "https://www.linkedin.com/in/renzo-oliveira-31a841328/" },
   { nome: "Marcos", papel: "Cloud & Data Analyst", foto: "/equipe/Marcus.jpg", iniciais: "MV", cor: "bg-moss", linkedin: "https://www.linkedin.com/in/marcos-vergueiro/" },
