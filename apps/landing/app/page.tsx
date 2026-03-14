@@ -354,9 +354,8 @@ export default function HomePage() {
                       </div>
                     )}
                     {m.linkedin && (
-                      <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-ink/50 hover:text-moss transition">
-                        <Linkedin className="h-3.5 w-3.5" />
-                        <span>LinkedIn</span>
+                      <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs text-ink/50 hover:text-moss transition">
+                        LinkedIn
                       </a>
                     )}
                   </div>
