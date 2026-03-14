@@ -7,7 +7,9 @@ import {
   FileCheck2,
   Flame,
   Layers3,
+  Linkedin,
   MapPinned,
+  Play,
   ScrollText,
   ShieldCheck,
   Tractor,
@@ -345,17 +347,17 @@ export default function HomePage() {
                     style={m.fotoOffset ? { objectPosition: `center ${m.fotoOffset}` } : undefined}
                   />
                   <div className="text-center">
-                    {m.linkedin ? (
-                      <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-dusk hover:text-moss transition">
-                        {m.nome}
-                      </a>
-                    ) : (
-                      <div className="text-sm font-semibold text-dusk">{m.nome}</div>
-                    )}
+                    <div className="text-sm font-semibold text-dusk">{m.nome}</div>
                     {m.papel && (
                       <div className="mt-1 text-xs font-medium uppercase tracking-eyebrow text-clay">
                         {m.papel}
                       </div>
+                    )}
+                    {m.linkedin && (
+                      <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs text-ink/50 hover:text-moss transition">
+                        <Linkedin className="h-3.5 w-3.5" />
+                        <span>LinkedIn</span>
+                      </a>
                     )}
                   </div>
                 </div>
@@ -397,6 +399,27 @@ export default function HomePage() {
                 </Card>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pitch video ── */}
+      <section className="border-y border-line/30">
+        <div className="section-inner flex flex-col items-center gap-8 py-section text-center">
+          <SectionHeading
+            eyebrow={t("video.eyebrow")}
+            heading={t("video.heading")}
+            description={t("video.desc")}
+          />
+          <div className="w-full max-w-3xl overflow-hidden rounded-tile border border-line/30">
+            <video
+              controls
+              preload="metadata"
+              className="w-full"
+              poster=""
+            >
+              <source src={`${BASE}/valyria-pitch.mp4`} type="video/mp4" />
+            </video>
           </div>
         </div>
       </section>

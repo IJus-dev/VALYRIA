@@ -122,6 +122,11 @@ export const en: Dictionary = {
   "udax.demoDay": "Pitch to investors at Ripple SP. June 2026.",
   "udax.vcNetwork": "Direct access to funds investing in XRPL.",
 
+  // Video
+  "video.eyebrow": "PITCH",
+  "video.heading": "See VALYRIA in action.",
+  "video.desc": "Watch our pitch and understand how VALYRIA transforms the agricultural derivatives market with XRPL.",
+
   // CTA
   "cta.h2.line1": "The agricultural market will change.",
   "cta.h2.line2": "The question is when.",

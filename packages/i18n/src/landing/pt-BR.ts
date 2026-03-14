@@ -122,6 +122,11 @@ export const ptBR: Dictionary = {
   "udax.demoDay": "Pitch pra investidores na Ripple SP. Junho 2026.",
   "udax.vcNetwork": "Acesso direto a fundos que investem em XRPL.",
 
+  // Video
+  "video.eyebrow": "PITCH",
+  "video.heading": "Veja a VALYRIA em a\u00e7\u00e3o.",
+  "video.desc": "Assista nosso pitch e entenda como a VALYRIA transforma o mercado de derivativos agr\u00edcolas com XRPL.",
+
   // CTA
   "cta.h2.line1": "O mercado agr\u00edcola vai mudar.",
   "cta.h2.line2": "A quest\u00e3o \u00e9 quando.",
