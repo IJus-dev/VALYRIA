@@ -25,14 +25,14 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /* ─── Equipe ───────────────────────────────────────────────────────────── */
 const equipe = [
-  { nome: "Roberto Caparroz", papel: "Advisor", foto: "/equipe/Roberto.jpg", iniciais: "RC", cor: "bg-moss" },
-  { nome: "Daniel Matos", papel: "CEO", foto: "/equipe/Daniel.jpg", iniciais: "DM", cor: "bg-clay" },
-  { nome: "Leonardo Caparroz", papel: "Founder (Wisebit) & Dev", foto: "/equipe/Leo.jpg", iniciais: "LC", cor: "bg-dusk" },
-  { nome: "Gustavo Caparroz", papel: "Founder (Wisebit)", foto: "/equipe/Gustavo.jpg", iniciais: "GC", cor: "bg-moss", fotoOffset: "-20px" },
-  { nome: "Pedro Sola", papel: "PO", foto: "/equipe/Pedro.jpg", iniciais: "PS", cor: "bg-clay" },
-  { nome: "Renzo", papel: "Dev", foto: "/equipe/Renzo.jpg", iniciais: "RZ", cor: "bg-dusk" },
-  { nome: "Marcos Scheunemann", papel: "Cloud & Data Analyst", foto: "/equipe/Marcus.jpg", iniciais: "MV", cor: "bg-moss" },
-  { nome: "Beatriz", papel: "Legal", foto: "/equipe/Beatriz.jpg", iniciais: "BZ", cor: "bg-clay" },
+  { nome: "Roberto", papel: "Advisor", foto: "/equipe/Roberto.jpg", iniciais: "RC", cor: "bg-moss", linkedin: "https://www.linkedin.com/in/robertocaparroz/" },
+  { nome: "Daniel", papel: "CEO", foto: "/equipe/Daniel.jpg", iniciais: "DM", cor: "bg-clay", linkedin: "https://www.linkedin.com/in/d4n13lm4t0s/" },
+  { nome: "Leonardo", papel: "Founder (Wisebit) & Dev", foto: "/equipe/Leo.jpg", iniciais: "LC", cor: "bg-dusk", linkedin: "https://www.linkedin.com/in/leonardo-caparroz-20b5b93b7/" },
+  { nome: "Gustavo", papel: "Founder (Wisebit)", foto: "/equipe/Gustavo.jpg", iniciais: "GC", cor: "bg-moss", fotoOffset: "-20px" },
+  { nome: "Pedro", papel: "PO", foto: "/equipe/Pedro.jpg", iniciais: "PS", cor: "bg-clay", linkedin: "https://www.linkedin.com/in/pedro-aur%C3%A9lio-sola-da-silva-rodrigues-65a238276/" },
+  { nome: "Renzo", papel: "Dev", foto: "/equipe/Renzo.jpg", iniciais: "RZ", cor: "bg-dusk", linkedin: "https://www.linkedin.com/in/renzo-oliveira-31a841328/" },
+  { nome: "Marcos", papel: "Cloud & Data Analyst", foto: "/equipe/Marcus.jpg", iniciais: "MV", cor: "bg-moss", linkedin: "https://www.linkedin.com/in/marcos-vergueiro/" },
+  { nome: "Beatriz", papel: "Legal", foto: "/equipe/Beatriz.jpg", iniciais: "BZ", cor: "bg-clay", linkedin: "https://www.linkedin.com/in/beatriz-graziano-chow-9a26b51a9/" },
 ];
 
 export default function HomePage() {
@@ -345,7 +345,13 @@ export default function HomePage() {
                     style={m.fotoOffset ? { objectPosition: `center ${m.fotoOffset}` } : undefined}
                   />
                   <div className="text-center">
-                    <div className="text-sm font-semibold text-dusk">{m.nome}</div>
+                    {m.linkedin ? (
+                      <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-dusk hover:text-moss transition">
+                        {m.nome}
+                      </a>
+                    ) : (
+                      <div className="text-sm font-semibold text-dusk">{m.nome}</div>
+                    )}
                     {m.papel && (
                       <div className="mt-1 text-xs font-medium uppercase tracking-eyebrow text-clay">
                         {m.papel}
