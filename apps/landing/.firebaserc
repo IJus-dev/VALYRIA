@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "vast-operator-432823-t6"
+  },
+  "targets": {
+    "vast-operator-432823-t6": {
+      "hosting": {
+        "landing": [
+          "valyria-landing-page"
+        ]
+      }
+    }
+  }
+}
