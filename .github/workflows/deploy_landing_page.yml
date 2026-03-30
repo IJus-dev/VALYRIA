@@ -2,7 +2,7 @@ name: Deploy landing to Firebase Hosting
 
 on:
   push:
-    branches: ["deploy/firebase"]
+    branches: ["main"]
     paths:
       - "apps/landing/**"
       - "packages/i18n/**"
